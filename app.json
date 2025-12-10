@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "Go-App",
+    "slug": "Go-App",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/bus-icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/bus-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/bus-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true
+    },
+    "web": {
+      "favicon": "./assets/bus-icon.png"
+    }
+  }
+}
