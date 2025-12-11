@@ -1,9 +1,19 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, Alert, Dimensions} from 'react-native';
-import {CameraView, Camera} from 'expo-camera';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Alert, Dimensions } from 'react-native';
+import { CameraView, Camera } from 'expo-camera';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import firestore from '@react-native-firebase/firestore';
 import LottieView from 'lottie-react-native';
+import { db } from '../../../firebase';
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  Timestamp,
+  limit,
+  updateDoc,
+  doc
+} from "firebase/firestore";
 
 const QRScanner = () => {
   const [hasPermission, setHasPermission] = useState(null);
@@ -25,7 +35,8 @@ const QRScanner = () => {
 
     console.log('Scanned data:', data);
 
-    const scannedBusId = data.split(':')[1];
+    // const scannedBusId = data.split(':')[1];
+    const scannedBusId = data;
 
     if (scannedBusId !== expectedBusId) {
       Alert.alert(
@@ -38,37 +49,42 @@ const QRScanner = () => {
 
     const userEmail = await AsyncStorage.getItem('userEmail');
 
+    // Determine journey type based on current time
+    const currentHour = new Date().getHours();
+    const journeyType = currentHour < 11 ? 'toCompany' : 'fromCompany';
+
     // Get the start and end of the current day
-    // const currentDate = new Date();
-    // currentDate.setHours(0, 0, 0, 0);
-    // const startOfDay = firestore.Timestamp.fromDate(currentDate);
-    // const endOfDay = firestore.Timestamp.fromDate(
-    //   new Date(currentDate.getTime() + 24 * 60 * 60 * 1000),
-    // );
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    const startOfDay = Timestamp.fromDate(currentDate);
+    const endOfDay = Timestamp.fromDate(
+      new Date(currentDate.getTime() + 24 * 60 * 60 * 1000),
+    );
 
     try {
-      // const bookingQuery = firestore()
-      //   .collection('reservations')
-      //   .where('email', '==', userEmail)
-      //   .where('travelDate', '>=', startOfDay)
-      //   .where('travelDate', '<', endOfDay)
-      //   .limit(1);
+      const bookingQuery = query(
+        collection(db, 'reservations'),
+        where('email', '==', userEmail),
+        where('travelDate', '>=', startOfDay),
+        where('travelDate', '<', endOfDay),
+        where('journeyType', '==', journeyType),
+        limit(1)
+      );
 
-      // const bookingSnapshot = await bookingQuery.get();
+      const bookingSnapshot = await getDocs(bookingQuery);
 
-      // if (!bookingSnapshot.empty) {
-      //   const bookingDoc = bookingSnapshot.docs[0];
-      //   await firestore()
-      //     .collection('reservations')
-      //     .doc(bookingDoc.id)
-      //     .update({checked: true});
-      //   setBookingDetails(bookingDoc.data());
-      // } else {
-      //   Alert.alert(
-      //     'No Booking Found',
-      //     "You don't have a booking for this bus today.",
-      //   );
-      // }
+      if (!bookingSnapshot.empty) {
+        const bookingDoc = bookingSnapshot.docs[0];
+        await updateDoc(doc(db, 'reservations', bookingDoc.id), {
+          checked: true
+        });
+        setBookingDetails(bookingDoc.data());
+      } else {
+        Alert.alert(
+          'No Booking Found',
+          `You don't have a booking for this bus today (${journeyType === 'toCompany' ? 'To Company' : 'From Company'}).`,
+        );
+      }
     } catch (error) {
       console.error('Error updating booking: ', error);
       Alert.alert('Error', 'Failed to process the QR code. Please try again.');
@@ -77,7 +93,7 @@ const QRScanner = () => {
     }
   };
 
-  const handleBarCodeScanned = ({type, data}) => {
+  const handleBarCodeScanned = ({ type, data }) => {
     if (!scanned) {
       processQRCode(data);
     }
