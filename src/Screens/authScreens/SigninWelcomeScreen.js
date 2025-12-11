@@ -52,17 +52,17 @@ const SigninWelcomeScreen = ({navigation}) => {
 
       <View style={styles.buttonContainer}>
         <Button
-          title="Student"
+          title="Get Statrted"
           buttonStyle={styles.button}
           titleStyle={styles.buttonTitle}
           onPress={() => navigation.navigate('Registration')}
         />
-        <Button
+        {/* <Button
           title="Lecture"
           buttonStyle={styles.lecbutton}
           titleStyle={styles.buttonTitle}
           onPress={() => navigation.navigate('SigninScreen')}
-        />
+        /> */}
       </View>
     </SafeAreaView>
   );
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 28,
-    color: '#ff8c52',
+    color: '#2948FF',
     fontWeight: 'bold',
     textAlign: 'center',
   },
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     height: '80%',
   },
   dot: {
-    backgroundColor: 'rgba(255,140,82,0.3)',
+    backgroundColor: 'rgba(41, 74, 221,0.3)',
     width: 8,
     height: 8,
     borderRadius: 4,
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   activeDot: {
-    backgroundColor: '#ff8c52',
+    backgroundColor: '#294add',
     width: 12,
     height: 12,
     borderRadius: 6,
@@ -124,13 +124,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   button: {
-    backgroundColor: '#ff8c52',
+    backgroundColor: '#294add',
     borderRadius: 8,
     height: 50,
     marginBottom: 15,
   },
   lecbutton: {
-    backgroundColor: '#e07b48',
+    backgroundColor: '#294add',
     borderRadius: 8,
     height: 50,
     marginBottom: 15,
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   loginButtonTitle: {
-    color: '#ff8c52',
+    color: '#294add',
     fontSize: 16,
     fontWeight: '600',
   },

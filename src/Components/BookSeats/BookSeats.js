@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   FlatList,
@@ -6,22 +6,24 @@ import {
   Alert,
   StyleSheet,
   Text,
+  Modal,
   SafeAreaView,
 } from 'react-native';
-import {useNavigation, useRoute} from '@react-navigation/native';
-// import {getDocs, collection, query, where, Timestamp} from 'firebase/firestore';
-// import {db} from '../../../firebase';
-import {Icon} from 'react-native-elements';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { getDocs, collection, query, where, Timestamp } from 'firebase/firestore';
+import { db } from '../../../firebase';
+import { Icon } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 const initializeSeats = (count, userRole) =>
-  Array.from({length: count}, (_, index) => ({
+  Array.from({ length: count }, (_, index) => ({
     seatId: index + 1,
     seatNumber: index + 1,
     empty: true,
     selected: false,
-    locked: userRole === 'lecturer' ? index >= 20 : index < 20,
+    // locked: userRole === 'lecturer' ? index >= 20 : index < 20,
+    locked: false,
   }));
 
 const BookSeats = () => {
@@ -35,9 +37,9 @@ const BookSeats = () => {
 
   const fetchUserRole = async () => {
     try {
-      // const role = await AsyncStorage.getItem('userRole');
-      // setUserRole(role || '');
-      // return role;
+      const role = await AsyncStorage.getItem('userRole');
+      setUserRole(role || '');
+      return role;
     } catch (error) {
       console.error('Error fetching user role:', error);
       return '';
@@ -47,58 +49,65 @@ const BookSeats = () => {
   const fetchSeatData = async () => {
     setIsLoading(true);
     try {
-      // const role = await fetchUserRole();
-      // const initialSeats = initializeSeats(45, role);
+      const role = await fetchUserRole();
+      const initialSeats = initializeSeats(32, role);
+
+      // Determine journey type based on current time
+      const currentHour = new Date().getHours();
+      const journeyType = currentHour < 11 ? 'toCompany' : 'fromCompany';
 
       // Create start and end of the selected date
-      // const startOfSelectedDate = new Date(date);
-      // startOfSelectedDate.setHours(0, 0, 0, 0); // Set to the start of the day
+      const startOfSelectedDate = new Date(date);
+      startOfSelectedDate.setHours(0, 0, 0, 0); // Set to the start of the day
 
-      // const endOfSelectedDate = new Date(date);
-      // endOfSelectedDate.setHours(23, 59, 59, 999); // Set to the end of the day
+      const endOfSelectedDate = new Date(date);
+      endOfSelectedDate.setHours(23, 59, 59, 999); // Set to the end of the day
 
-      // console.log(
-      //   'Querying for date range:',
-      //   startOfSelectedDate,
-      //   'to',
-      //   endOfSelectedDate,
-      // );
+      console.log(
+        'Querying for date range:',
+        startOfSelectedDate,
+        'to',
+        endOfSelectedDate,
+        'with journey type:',
+        journeyType,
+      );
 
-      // Create a query to fetch reservations for the selected date range
-      // const reservationsQuery = query(
-      //   collection(db, 'reservations'),
-      //   where('travelDate', '>=', Timestamp.fromDate(startOfSelectedDate)),
-      //   where('travelDate', '<=', Timestamp.fromDate(endOfSelectedDate)),
-      // );
+      // Create a query to fetch reservations for the selected date range and journey type
+      const reservationsQuery = query(
+        collection(db, 'reservations'),
+        where('travelDate', '>=', Timestamp.fromDate(startOfSelectedDate)),
+        where('travelDate', '<=', Timestamp.fromDate(endOfSelectedDate)),
+        where('journeyType', '==', journeyType),
+      );
 
-      // const querySnapshot = await getDocs(reservationsQuery);
+      const querySnapshot = await getDocs(reservationsQuery);
 
-      // console.log('Query snapshot size:', querySnapshot.size);
+      console.log('Query snapshot size:', querySnapshot.size);
 
-      // const reservations = querySnapshot.docs.map(doc => {
-      //   const data = doc.data();
-      //   console.log('Reservation data:', data);
-      //   return data;
-      // });
+      const reservations = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        console.log('Reservation data:', data);
+        return data;
+      });
 
-      // console.log('Fetched reservations:', reservations);
+      console.log('Fetched reservations:', reservations);
 
       // Update seats based on reservation data
-      // const updatedSeats = initialSeats.map(seat => {
-      //   const reservation = reservations.find(
-      //     res => res.seatId === seat.seatId,
-      //   );
-      //   if (reservation) {
-      //     console.log(
-      //       `Updating seat ${seat.seatId} with reservation data:`,
-      //       reservation,
-      //     );
-      //   }
-      //   return reservation ? {...seat, empty: !reservation.seat_state} : seat;
-      // });
+      const updatedSeats = initialSeats.map(seat => {
+        const reservation = reservations.find(
+          res => res.seatId === seat.seatId,
+        );
+        if (reservation) {
+          console.log(
+            `Updating seat ${seat.seatId} with reservation data:`,
+            reservation,
+          );
+        }
+        return reservation ? { ...seat, empty: !reservation.seat_state } : seat;
+      });
 
-      // console.log('Updated seats:', updatedSeats);
-      // setSeats(updatedSeats);
+      console.log('Updated seats:', updatedSeats);
+      setSeats(updatedSeats);
     } catch (error) {
       console.error('Error fetching seat data:', error);
       Alert.alert('Error', 'Failed to load seat data. Please try again.');
@@ -130,7 +139,7 @@ const BookSeats = () => {
     });
   };
 
-  const renderSeat = ({item}) => (
+  const renderSeat = ({ item }) => (
     <TouchableOpacity
       style={styles.seatContainer}
       onPress={() => onSelectSeat(item)}
@@ -162,10 +171,10 @@ const BookSeats = () => {
         <Icon name="event-seat" type="material" size={24} color="#FF5252" />
         <Text style={styles.legendText}>Booked</Text>
       </View>
-      <View style={styles.legendItem}>
+      {/* <View style={styles.legendItem}>
         <Icon name="event-seat" type="material" size={24} color="#9E9E9E" />
         <Text style={styles.legendText}>Locked</Text>
-      </View>
+      </View> */}
     </View>
   );
 
@@ -190,15 +199,7 @@ const BookSeats = () => {
         onConfirm={(selectedDate) => {
           setShowDatePicker(false);
           if (selectedDate) {
-            const dayOfWeek = selectedDate.getDay();
-            if (dayOfWeek !== 2 && dayOfWeek !== 6) {
-              Alert.alert(
-                'Invalid Date',
-                'Please select a Tuesday or Saturday.',
-              );
-            } else {
-              setDate(selectedDate);
-            }
+            setDate(selectedDate);
           }
         }}
         onCancel={() => setShowDatePicker(false)}
@@ -302,7 +303,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 20,
     bottom: 20,
-    backgroundColor: '#ff8c52',
+    backgroundColor: '#2948FF',
     borderRadius: 30,
     width: 60,
     height: 60,
@@ -316,7 +317,7 @@ const styles = StyleSheet.create({
   dateButton: {
     margin: 10,
     padding: 10,
-    backgroundColor: '#ff8c52',
+    backgroundColor: '#2948FF',
     borderRadius: 5,
     alignItems: 'center',
   },

@@ -12,14 +12,14 @@ import {
   Platform,
   Modal,
 } from 'react-native';
-// import {
-//   signInWithEmailAndPassword,
-//   sendPasswordResetEmail,
-// } from 'firebase/auth';
-// import {getDoc, doc} from 'firebase/firestore';
+import {
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+} from 'firebase/auth';
+import {getDoc, doc} from 'firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import {auth, db} from '../../../firebase';
+import {auth, db} from '../../../firebase';
 
 const Login = ({route}) => {
   const {justRegistered} = route.params || {};
@@ -57,28 +57,28 @@ const Login = ({route}) => {
 
     setIsLoading(true);
     try {
-      // const userCredentials = await signInWithEmailAndPassword(
-      //   auth,
-      //   email,
-      //   password,
-      // );
-      // const user = userCredentials.user;
-      // console.log('Logged in with:', user.email);
+      const userCredentials = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+      const user = userCredentials.user;
+      console.log('Logged in with:', user.email);
 
-      // const userDoc = await getDoc(doc(db, 'userdata', user.email));
-      // if (userDoc.exists()) {
-      //   const userData = userDoc.data();
-      //   const userRole = userData.role;
-      //   const userEmail = userData.email;
+      const userDoc = await getDoc(doc(db, 'userdata', user.email));
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        const userRole = userData.role;
+        const userEmail = userData.email;
 
-      //   await AsyncStorage.setItem('userRole', userRole);
-      //   await AsyncStorage.setItem('userEmail', userEmail);
-      //   console.log('User role and email saved:', userRole);
+        await AsyncStorage.setItem('userRole', userRole);
+        await AsyncStorage.setItem('userEmail', userEmail);
+        console.log('User role and email saved:', userRole);
 
-      //   navigation.navigate('HomeScreen');
-      // } else {
-      //   throw new Error('user_data_not_found');
-      // }
+        navigation.navigate('HomeScreen');
+      } else {
+        throw new Error('user_data_not_found');
+      }
     } catch (error) {
       console.error('Login error:', error.code);
       handleLoginError(error);
@@ -214,7 +214,7 @@ const Login = ({route}) => {
         onRequestClose={() => {}}>
         <View style={styles.modalBackground}>
           <View style={styles.activityIndicatorWrapper}>
-            <ActivityIndicator size="large" color="#ff8c52" />
+            <ActivityIndicator size="large" color="#2948FF" />
           </View>
         </View>
       </Modal>
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#ff8c52',
+    color: '#2948FF',
     marginBottom: 10,
   },
   subtitle: {
@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loginButton: {
-    backgroundColor: '#ff8c52',
+    backgroundColor: '#2948FF',
     width: '100%',
     padding: 15,
     borderRadius: 8,
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   forgotPasswordText: {
-    color: '#ff8c52',
+    color: '#2948FF',
     fontSize: 14,
     fontWeight: '600',
   },
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   registerLink: {
-    color: '#ff8c52',
+    color: '#2948FF',
     fontSize: 14,
     fontWeight: '600',
   },
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   errorModalButton: {
-    backgroundColor: '#ff8c52',
+    backgroundColor: '#2948FF',
     padding: 10,
     borderRadius: 5,
   },

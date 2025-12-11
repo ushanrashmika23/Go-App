@@ -63,7 +63,7 @@ export default function HomeScreen() {
       <HomeHeader />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.content}>
-          <View style={styles.buttonContainer}>
+          {/* <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={[styles.deliveryButton, delivery && styles.activeButton]}
               onPress={() => {
@@ -99,7 +99,7 @@ export default function HomeScreen() {
                 Scheduled Delivery
               </Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
 
           {/* <View style={styles.locationCard}>
             <View style={styles.locationInfo}>
@@ -160,6 +160,11 @@ export default function HomeScreen() {
               iconName="alert-circle" // Changed to a valid icon name
               onPress={() => navigation.navigate('Emergency')}
             />
+            <MenuButton
+              title="FeedBack Details"
+              iconName="alert-circle" // Changed to a valid icon name
+              onPress={() => navigation.navigate('Emergency')}
+            />
           </View>
         </View>
       </ScrollView>
@@ -170,7 +175,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   qrBanner: {
     flexDirection: 'row',
-    backgroundColor: '#E5DCCB',
+    backgroundColor: '#d3d8f3ff',
     borderRadius: 10,
     marginBottom: 16,
     padding: 16,

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -11,20 +11,20 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
-// import {createUserWithEmailAndPassword} from 'firebase/auth';
-// import {setDoc, doc} from 'firebase/firestore';
-import {useNavigation} from '@react-navigation/native';
-// import {auth, db} from '../../../firebase';
-import {Icon} from 'react-native-elements';
+import {createUserWithEmailAndPassword} from 'firebase/auth';
+import {setDoc, doc} from 'firebase/firestore';
+import { useNavigation } from '@react-navigation/native';
+import {auth, db} from '../../../firebase';
+import { Icon } from 'react-native-elements';
 
 const Registration = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [fullName, setFullName] = useState('');
-  const [enrollmentNum, setEnrollmentNum] = useState('');
+  // const [enrollmentNum, setEnrollmentNum] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [role, setRole] = useState('student');
+  const [role, setRole] = useState('passenger');
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
 
@@ -62,14 +62,14 @@ const Registration = () => {
     }
 
     // Enrollment number validation
-    if (!enrollmentNum) {
-      showAlert(
-        role === 'student'
-          ? 'Student Enrollment Number is required'
-          : 'Lecturer ID is required',
-      );
-      return false;
-    }
+    // if (!enrollmentNum) {
+    //   showAlert(
+    //     role === 'student'
+    //       ? 'Student Enrollment Number is required'
+    //       : 'Lecturer ID is required',
+    //   );
+    //   return false;
+    // }
 
     // Phone number validation
     const phoneRegex = /^\d{10}$/;
@@ -84,36 +84,39 @@ const Registration = () => {
     return true;
   };
 
-   const handleLoginError = error => {
-     let message = 'An unexpected error occurred. Please try again later.';
+  const handleLoginError = error => {
+    let message = 'An unexpected error occurred. Please try again later.';
 
-     switch (error.code) {
-       case 'auth/user-not-found':
-       case 'auth/wrong-password':
-       case 'auth/invalid-credential':
-         message = 'Invalid email or password. Please try again.';
-         break;
-       case 'auth/invalid-email':
-         message = 'Invalid email address. Please check and try again.';
-         break;
-       case 'auth/email-already-in-use':
-         message = 'Email already in use. Please check and try again.';
-         break;
-       case 'auth/user-disabled':
-         message = 'This account has been disabled. Please contact support.';
-         break;
-       case 'auth/too-many-requests':
-         message =
-           'Too many unsuccessful login attempts. Please try again later.';
-         break;
-     }
+    switch (error.code) {
+      case 'auth/user-not-found':
+      case 'auth/wrong-password':
+      case 'auth/invalid-credential':
+        message = 'Invalid email or password. Please try again.';
+        break;
+      case 'auth/invalid-email':
+        message = 'Invalid email address. Please check and try again.';
+        break;
+      case 'auth/email-already-in-use':
+        message = 'Email already in use. Please check and try again.';
+        break;
+      case 'auth/user-disabled':
+        message = 'This account has been disabled. Please contact support.';
+        break;
+      case 'auth/too-many-requests':
+        message =
+          'Too many unsuccessful login attempts. Please try again later.';
+        break;
+      case 'auth/network-request-failed':
+        message = 'Network error. Please check your internet connection and try again.';
+        break;
+    }
 
-     if (error.message === 'user_data_not_found') {
-       message = 'User data not found. Please contact support.';
-     }
+    if (error.message === 'user_data_not_found') {
+      message = 'User data not found. Please contact support.';
+    }
 
-     Alert.alert('Registration Error', message);
-   };
+    Alert.alert('Registration Error', message);
+  };
 
   const showAlert = message => {
     Alert.alert('Registration Error', message);
@@ -126,29 +129,29 @@ const Registration = () => {
     setIsLoading(true);
 
     try {
-      // const userCredential = await createUserWithEmailAndPassword(
-      //   auth,
-      //   email,
-      //   password,
-      // );
-      // const user = userCredential.user;
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+      const user = userCredential.user;
 
-      // await setDoc(doc(db, 'userdata', user.email), {
-      //   email: user.email,
-      //   fullName: fullName,
-      //   enrollmentNum: enrollmentNum,
-      //   phoneNumber: phoneNumber,
-      //   role: role,
-      // });
-      // setIsLoading(false);
-      // console.log('Registered with:', user.email, 'as', role);
-      // Alert.alert('Success', 'Registration successful!', [
-      //   {
-      //     text: 'OK',
-      //     onPress: () =>
-      //       navigation.navigate('SigninScreen', {justRegistered: true}),
-      //   },
-      // ]);
+      await setDoc(doc(db, 'userdata', user.email), {
+        email: user.email,
+        fullName: fullName,
+        // enrollmentNum: enrollmentNum,
+        phoneNumber: phoneNumber,
+        role: role,
+      });
+      setIsLoading(false);
+      console.log('Registered with:', user.email, 'as', role);
+      Alert.alert('Success', 'Registration successful!', [
+        {
+          text: 'OK',
+          onPress: () =>
+            navigation.navigate('SigninScreen', {justRegistered: true}),
+        },
+      ]);
     } catch (error) {
       console.log('Registration Error:', error.message);
       setIsLoading(false);
@@ -166,13 +169,13 @@ const Registration = () => {
               name="user-plus"
               type="font-awesome"
               size={50}
-              color="#ff8c52"
+              color="#294add"
             />
             <Text style={styles.title}>Create Account</Text>
           </View>
           <View style={styles.inputContainer}>
             <View style={styles.inputWrapper}>
-              <Icon name="user" type="font-awesome" size={20} color="#ff8c52" />
+              <Icon name="user" type="font-awesome" size={20} color="#294add" />
               <TextInput
                 placeholder="Full Name"
                 value={fullName}
@@ -186,7 +189,7 @@ const Registration = () => {
                 name="envelope"
                 type="font-awesome"
                 size={20}
-                color="#ff8c52"
+                color="#294add"
               />
               <TextInput
                 placeholder="Email"
@@ -199,7 +202,7 @@ const Registration = () => {
               />
             </View>
             <View style={styles.inputWrapper}>
-              <Icon name="lock" type="font-awesome" size={20} color="#ff8c52" />
+              <Icon name="lock" type="font-awesome" size={20} color="#294add" />
               <TextInput
                 placeholder="Password"
                 value={password}
@@ -210,7 +213,7 @@ const Registration = () => {
               />
             </View>
             <View style={styles.inputWrapper}>
-              <Icon name="lock" type="font-awesome" size={20} color="#ff8c52" />
+              <Icon name="lock" type="font-awesome" size={20} color="#294add" />
               <TextInput
                 placeholder="Confirm Password"
                 value={confirmPassword}
@@ -220,12 +223,12 @@ const Registration = () => {
                 placeholderTextColor="#999"
               />
             </View>
-            <View style={styles.inputWrapper}>
+            {/* <View style={styles.inputWrapper}>
               <Icon
                 name="id-card"
                 type="font-awesome"
                 size={20}
-                color="#ff8c52"
+                color="#294add"
               />
               <TextInput
                 placeholder={
@@ -238,13 +241,13 @@ const Registration = () => {
                 style={styles.input}
                 placeholderTextColor="#999"
               />
-            </View>
+            </View> */}
             <View style={styles.inputWrapper}>
               <Icon
                 name="phone"
                 type="font-awesome"
                 size={20}
-                color="#ff8c52"
+                color="#294add"
               />
               <TextInput
                 placeholder="Phone Number"
@@ -284,7 +287,7 @@ const Registration = () => {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#ff8c52',
+    backgroundColor: '#294add',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
@@ -347,14 +350,14 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: '#f5bda2',
+    borderColor: '#8396e7ff',
     marginHorizontal: 5,
   },
   roleButtonActive: {
-    backgroundColor: '#ff8c52',
+    backgroundColor: '#294add',
   },
   roleButtonText: {
-    color: '#f5bda2',
+    color: '#8396e7ff',
     fontWeight: 'bold',
     fontSize: 16,
     marginLeft: 10,
@@ -367,7 +370,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   button: {
-    backgroundColor: '#ff8c52',
+    backgroundColor: '#294add',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
@@ -387,7 +390,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   loginLink: {
-    color: '#ff8c52',
+    color: '#294add',
     fontWeight: 'bold',
     fontSize: 16,
     marginLeft: 5,

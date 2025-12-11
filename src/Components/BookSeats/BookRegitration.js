@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   TextInput,
@@ -8,12 +8,14 @@ import {
   ScrollView,
   TouchableOpacity,
   Switch,
+  Modal,
+  FlatList,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import {doc, setDoc, getDoc, getDocs, collection} from 'firebase/firestore';
-// import {db} from '../../../firebase';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import SelectDropdown from 'react-native-select-dropdown';
+import { doc, setDoc, getDoc, getDocs, collection } from 'firebase/firestore';
+import { db } from '../../../firebase';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { Icon } from 'react-native-elements';
 
 export default function BookRegistration() {
   const [fullName, setFullName] = useState('');
@@ -25,27 +27,28 @@ export default function BookRegistration() {
   const [reserveTuesday, setReserveTuesday] = useState(false);
   const [upcomingTuesday, setUpcomingTuesday] = useState(null);
   const [interchanges, setInterchanges] = useState([]);
+  const [showDestinationModal, setShowDestinationModal] = useState(false);
 
   const route = useRoute();
   const navigation = useNavigation();
-  const {seatNumber, seatId, date} = route.params;
+  const { seatNumber, seatId, date } = route.params;
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // const savedEmail = await AsyncStorage.getItem('userEmail');
-        // if (savedEmail) {
-        //   setEmail(savedEmail);
-        //   const userDocRef = doc(db, 'userdata', savedEmail);
-        //   const userDoc = await getDoc(userDocRef);
-        //   if (userDoc.exists()) {
-        //     const userData = userDoc.data();
-        //     setFullName(userData.fullName);
-        //     setPhoneNumber(userData.phoneNumber);
-        //   } else {
-        //     console.log('No user data found in Firebase');
-        //   }
-        // }
+        const savedEmail = await AsyncStorage.getItem('userEmail');
+        if (savedEmail) {
+          setEmail(savedEmail);
+          const userDocRef = doc(db, 'userdata', savedEmail);
+          const userDoc = await getDoc(userDocRef);
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            setFullName(userData.fullName);
+            setPhoneNumber(userData.phoneNumber);
+          } else {
+            console.log('No user data found in Firebase');
+          }
+        }
       } catch (error) {
         console.log('Error fetching user data:', error);
       }
@@ -56,29 +59,23 @@ export default function BookRegistration() {
   }, []);
 
   useEffect(() => {
-    const travelDay = new Date(date).getDay();
-    if (travelDay === 6) {
-      setJourneyType('fromCampus'); // Saturday
-      // Calculate the upcoming Tuesday
-      const tuesday = new Date(date);
-      tuesday.setDate(tuesday.getDate() + ((2 + 7 - tuesday.getDay()) % 7));
-      setUpcomingTuesday(tuesday);
-    } else if (travelDay === 2) {
-      setJourneyType('toCampus'); // Tuesday
+    // Set journey type based on current time
+    const currentHour = new Date().getHours();
+    if (currentHour < 11) {
+      setJourneyType('toCompany');
     } else {
-      Alert.alert('Error', 'Please select either a Tuesday or Saturday.');
-      navigation.goBack();
+      setJourneyType('fromCompany');
     }
-  }, [date, navigation]);
+  }, []);
 
   const fetchInterchangeData = async () => {
     try {
-      // const ticketPricesCollection = collection(db, 'ticketPrices');
-      // const querySnapshot = await getDocs(ticketPricesCollection);
-      // const interchangeData = querySnapshot.docs.map(
-      //   doc => doc.data().exitName,
-      // );
-      // setInterchanges(interchangeData);
+      const ticketPricesCollection = collection(db, 'ticketPrices');
+      const querySnapshot = await getDocs(ticketPricesCollection);
+      const interchangeData = querySnapshot.docs.map(
+        doc => doc.data().exitName,
+      );
+      setInterchanges(interchangeData);
     } catch (error) {
       console.log('Error fetching interchange data:', error);
       Alert.alert(
@@ -96,47 +93,28 @@ export default function BookRegistration() {
 
     try {
       // Book for the selected date
-      // await setDoc(
-      //   doc(
-      //     db,
-      //     'reservations',
-      //     `${email}_${seatId}_${date.toISOString().split('T')[0]}`,
-      //   ),
-      //   {
-      //     fullName,
-      //     email,
-      //     phoneNumber,
-      //     journeyType,
-      //     destination,
-      //     travelDate: date,
-      //     seatId,
-      //     seat_state: true,
-      //   },
-      // );
+      await setDoc(
+        doc(
+          db,
+          'reservations',
+          `${email}_${seatId}_${date.toISOString().split('T')[0]}`,
+        ),
+        {
+          fullName,
+          email,
+          phoneNumber,
+          journeyType,
+          destination,
+          travelDate: date,
+          seatId,
+          seat_state: true,
+        },
+      );
 
-      // If it's Saturday and user wants to reserve for Tuesday
-      // if (journeyType === 'fromCampus' && reserveTuesday && upcomingTuesday) {
-      //   await setDoc(
-      //     doc(
-      //       db,
-      //       'reservations',
-      //       `${email}_${seatId}_${upcomingTuesday.toISOString().split('T')[0]}`,
-      //     ),
-      //     {
-      //       fullName,
-      //       email,
-      //       phoneNumber,
-      //       journeyType: 'toCampus',
-      //       destination,
-      //       travelDate: upcomingTuesday,
-      //       seatId,
-      //       seat_state: true,
-      //     },
-      //   );
-      // }
 
-      // Alert.alert('Success', 'Your seat(s) have been booked successfully');
-      // navigation.navigate('BookSeats', {refreshSeats: true});
+
+      Alert.alert('Success', 'Your seat(s) have been booked successfully');
+      navigation.navigate('BookSeats', { refreshSeats: true });
     } catch (error) {
       console.log('Error submitting data:', error);
       Alert.alert('Error', 'Failed to book the seat. Please try again.');
@@ -148,6 +126,7 @@ export default function BookRegistration() {
       <Text style={styles.title}>Book Your Seat</Text>
       <Text style={styles.seatInfo}>Seat Number: {seatNumber}</Text>
       <Text style={styles.seatInfo}>{date.toISOString().split('T')[0]}</Text>
+      <Text style={styles.seatInfo}>{journeyType === 'toCompany' ? 'To Company' : journeyType === 'fromCompany' ? 'From Company' : ''}</Text>
 
       <TextInput
         value={fullName}
@@ -172,54 +151,53 @@ export default function BookRegistration() {
         editable={false}
       />
 
-      <SelectDropdown
-        data={interchanges}
-        onSelect={(selectedItem, index) => {
-          setDestination(selectedItem);
-        }}
-        defaultButtonText="Select a destination"
-        buttonTextAfterSelection={(selectedItem, index) => {
-          return selectedItem;
-        }}
-        rowTextForSelection={(item, index) => {
-          return item;
-        }}
-        buttonStyle={styles.dropdown1BtnStyle}
-        buttonTextStyle={styles.dropdown1BtnTxtStyle}
-        renderDropdownIcon={isOpened => {
-          return <Text style={styles.dropdownIcon}>{isOpened ? '▲' : '▼'}</Text>;
-        }}
-        dropdownIconPosition={'right'}
-        dropdownStyle={styles.dropdown1DropdownStyle}
-        rowStyle={styles.dropdown1RowStyle}
-        rowTextStyle={styles.dropdown1RowTxtStyle}
-      />
-
-      <Text style={styles.dateInfo}>
-        {journeyType === 'fromCampus'
-          ? 'This journey is From Campus (Saturday)'
-          : 'This journey is To Campus (Tuesday)'}
-      </Text>
-
-      {journeyType === 'fromCampus' && (
-        <View style={styles.switchContainer}>
-          <Text style={styles.highlightedText}>
-            Reserve for upcoming Tuesday?
-          </Text>
-          <Switch
-            value={reserveTuesday}
-            onValueChange={setReserveTuesday}
-            trackColor={{false: '#767577', true: '#81b0ff'}}
-            thumbColor={reserveTuesday ? '#ff8c52' : '#f4f3f4'}
-          />
-        </View>
-      )}
-
-      {reserveTuesday && upcomingTuesday && (
-        <Text style={styles.upcomingTuesdayInfo}>
-          Upcoming Tuesday: {upcomingTuesday.toISOString().split('T')[0]}
+      <TouchableOpacity
+        style={styles.pickerButton}
+        onPress={() => setShowDestinationModal(true)}
+      >
+        <Text style={[styles.pickerButtonText, !destination && styles.placeholderText]}>
+          {destination || 'Select a destination'}
         </Text>
-      )}
+        <Icon name="chevron-down" type="material" size={24} color="#666" />
+      </TouchableOpacity>
+
+      {/* Destination Modal */}
+      <Modal
+        visible={showDestinationModal}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowDestinationModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Select Destination</Text>
+              <TouchableOpacity onPress={() => setShowDestinationModal(false)}>
+                <Icon name="close" type="material" size={24} color="#333" />
+              </TouchableOpacity>
+            </View>
+            <FlatList
+              data={interchanges}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.modalItem}
+                  onPress={() => {
+                    setDestination(item);
+                    setShowDestinationModal(false);
+                  }}
+                >
+                  <Text style={styles.modalItemText}>{item}</Text>
+                  {destination === item && (
+                    <Icon name="check" type="material" size={20} color="#2948FF" />
+                  )}
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        </View>
+      </Modal>
+
 
       <TouchableOpacity style={styles.submitButton} onPress={submitBooking}>
         <Text style={styles.submitButtonText}>Book Seat</Text>
@@ -240,41 +218,66 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     color: '#666',
   },
-  dropdown1BtnStyle: {
-    width: '100%',
+  pickerButton: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     height: 50,
     backgroundColor: '#fff',
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#ddd',
+    paddingHorizontal: 15,
     marginBottom: 15,
   },
-  dropdown1BtnTxtStyle: {
-    color: '#333',
-    textAlign: 'left',
+  pickerButtonText: {
     fontSize: 16,
-  },
-  dropdownIcon: {
-    fontSize: 18,
     color: '#333',
   },
-  dropdown1DropdownStyle: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
+  placeholderText: {
+    color: '#999',
   },
-  dropdown1RowStyle: {
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
     backgroundColor: '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: '70%',
+    paddingBottom: 20,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
     borderBottomColor: '#ddd',
-    height: 50,
   },
-  dropdown1RowTxtStyle: {
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
     color: '#333',
-    textAlign: 'left',
+  },
+  modalItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  modalItemText: {
     fontSize: 16,
+    color: '#333',
   },
   container: {
     padding: 20,
     backgroundColor: '#f5f5f5',
+    flexGrow: 1,
   },
   title: {
     fontSize: 24,
@@ -307,7 +310,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   submitButton: {
-    backgroundColor: '#ff8c52',
+    backgroundColor: '#2948FF',
     padding: 15,
     borderRadius: 8,
     marginTop: 10,
@@ -343,4 +346,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontStyle: 'italic',
   },
+
 });

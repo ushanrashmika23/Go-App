@@ -201,7 +201,7 @@ function TabNavigator() {
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#ff8c52',
+        tabBarActiveTintColor: '#2948FF',
         tabBarInactiveTintColor: 'gray',
         headerShown: false,
         tabBarStyle: {
@@ -218,8 +218,8 @@ function TabNavigator() {
         component={Notifications}
         options={{
           tabBarBadge: unreadCount > 0 ? unreadCount : null,
-          tabBarBadgeStyle: {backgroundColor: '#ff8c52'},
-          tabBarBadgeStyle: {backgroundColor: '#ff8c52', color: 'white'},
+          tabBarBadgeStyle: {backgroundColor: '#2948FF'},
+          tabBarBadgeStyle: {backgroundColor: '#2948FF', color: 'white'},
         }}
       />
       <Tab.Screen name="profile" component={ProfilePage} />

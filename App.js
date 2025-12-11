@@ -7,6 +7,7 @@ import {
   PermissionsAndroid,
   Platform,
 } from 'react-native';
+import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useEffect } from 'react';
 import { colors } from './src/global/styles';
 import RootNavigation from './src/navigation/RootNavigation';
@@ -21,9 +22,9 @@ import Home from './src/Screens/HomeScreen';
 export default function App() {
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <RootNavigation />
-    </View>
+    </SafeAreaView>
   );
 }
 
