@@ -5,8 +5,8 @@ import MapView, {
   Marker,
 } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
-// import {doc, onSnapshot} from 'firebase/firestore';
-// import {db} from '../../../firebase'; // Make sure to import your Firebase config
+import {doc, onSnapshot} from 'firebase/firestore';
+import {db} from '../../../firebase'; // Make sure to import your Firebase config
 
 const GOOGLE_MAPS_APIKEY = 'AIzaSyB8SDuL-vEKer19D3XBIrNmO8-uuYN_mkI';
 
@@ -37,25 +37,25 @@ const Routemap = () => {
     });
   };
 
-  // useEffect(() => {
-  //   const unsubscribe = onSnapshot(
-  //     doc(db, 'busLocation', 'currentLocation'),
-  //     doc => {
-  //       if (doc.exists()) {
-  //         const data = doc.data();
-  //         const newBusLocation = {
-  //           latitude: data.latitude,
-  //           longitude: data.longitude,
-  //         };
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      doc(db, 'busLocation', 'currentLocation'),
+      doc => {
+        if (doc.exists()) {
+          const data = doc.data();
+          const newBusLocation = {
+            latitude: data.latitude,
+            longitude: data.longitude,
+          };
 
-  //         animateBusLocation(newBusLocation); // Call to animate the marker
-  //         setIsTracking(data.isTracking);
-  //       }
-  //     },
-  //   );
+          animateBusLocation(newBusLocation); // Call to animate the marker
+          setIsTracking(data.isTracking);
+        }
+      },
+    );
 
-  //   return () => unsubscribe();
-  // }, []);
+    return () => unsubscribe();
+  }, []);
 
   const onRouteReady = result => {
     setRouteCoordinates(result.coordinates);

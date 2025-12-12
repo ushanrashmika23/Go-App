@@ -1,16 +1,20 @@
-import React, {useState, useEffect} from 'react';
-import {View, Image, StyleSheet, Text} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Image, StyleSheet, Text } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const BustypeRow = ({isSaturday}) => {
+const BustypeRow = ({ isSaturday }) => {
   const [timeLeft, setTimeLeft] = useState('');
+  const currentHour = new Date().getHours();
 
   useEffect(() => {
     const timer = setInterval(() => {
       const now = new Date();
       const departureTime = new Date(now);
-      departureTime.setHours(16, 0, 0, 0); // Set to 4:00 PM
-
+      if (currentHour < 11) {
+        departureTime.setHours(8, 0, 0, 0); // Set to 8:00 AM
+      } else {
+        departureTime.setHours(16, 0, 0, 0); // Set to 4:00 PM
+      }
       if (now > departureTime) {
         departureTime.setDate(departureTime.getDate() + 1);
       }
@@ -34,11 +38,11 @@ const BustypeRow = ({isSaturday}) => {
       />
       <View style={styles.middleContainer}>
         <Text style={styles.type}>
-          Staff KduSC Bus <Ionicons name="person" size={16} />
+          Companey Staff Bus <Ionicons name="person" size={16} />
         </Text>
         <Text style={styles.time}>Departure: 4:00 PM</Text>
         <Text style={styles.location}>
-          From: {isSaturday ? 'Campus' : 'Town'}
+          From: {currentHour > 11 ? 'Companey' : 'Town'}
         </Text>
         <Text style={styles.countdown}>Time left: {timeLeft}</Text>
       </View>
@@ -55,7 +59,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
     borderRadius: 10,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,

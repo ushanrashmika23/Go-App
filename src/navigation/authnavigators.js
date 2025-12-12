@@ -27,7 +27,6 @@ import DriverDetails from '../Screens/Details/DriverDetails';
 import BusDetails from '../Screens/Details/BusDetails';
 import Emergency from '../Screens/EmergencyDetails/Emergency';
 import FeedBack from '../Screens/FeedBack/FeedBack';
-import {getUnreadNotificationInboxCount} from 'native-notify';
 import {useNotification} from './NotificationContext';
 import QRScannerScreen from '../Screens/QRscreens/QrScannerScreen';
 const Tab = createBottomTabNavigator();

@@ -1,45 +1,37 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
-import {getDocs, collection, query, where, onSnapshot} from 'firebase/firestore';
-// import {db} from '../../firebase'; // Adjust the import path as necessary
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { getDocs, collection, query, where, onSnapshot } from 'firebase/firestore';
+import { db } from '../../firebase'; // Adjust the import path as necessary
 
 const TrackingTimeline = () => {
   const [interchanges, setInterchanges] = useState([]);
   const [isToCampus, setIsToCampus] = useState(false);
 
   useEffect(() => {
-    // Determine if today is Tuesday or Saturday
-    const today = new Date();
-    const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+    // Determine journey direction based on current time
+    const currentHour = new Date().getHours();
+    setIsToCampus(currentHour < 11);
 
-    // Set isToCampus based on the day of the week
-
-    if (dayOfWeek > 2) {
-      setIsToCampus(false);
-    } else if (dayOfWeek <= 1) {
-      setIsToCampus(true);
-    }
-    // setIsToCampus(dayOfWeek === 2 || dayOfWeek === 6); // Tuesday or Saturday
     const interchangesQuery = query(
       collection(db, 'interchanges'),
       where('distance', '!=', null),
     );
     // Set up the real-time listener
     const unsubscribe = onSnapshot(
-      // interchangesQuery,
-      // querySnapshot => {
-      //   const fetchedInterchanges = querySnapshot.docs.map(doc => ({
-      //     id: doc.id,
-      //     ...doc.data(),
-      //   }));
+      interchangesQuery,
+      querySnapshot => {
+        const fetchedInterchanges = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
 
-      //   // Sort the interchanges based on the isToCampus state
-      //   const sortedInterchanges = fetchedInterchanges.sort((a, b) =>
-      //     isToCampus ? b.distance - a.distance : a.distance - b.distance,
-      //   );
+        // Sort the interchanges based on the isToCampus state
+        const sortedInterchanges = fetchedInterchanges.sort((a, b) =>
+          isToCampus ? b.distance - a.distance : a.distance - b.distance,
+        );
 
-      //   setInterchanges(sortedInterchanges);
-      // },
+        setInterchanges(sortedInterchanges);
+      },
       error => {
         console.error('Error fetching interchanges:', error);
       },

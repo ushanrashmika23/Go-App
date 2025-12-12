@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Image, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-// import {  storage, db } from '../../firebase';
+import {  storage, db } from '../../firebase';
 import { v4 } from 'uuid';
-// import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-// import { addDoc, collection } from 'firebase/firestore';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { addDoc, collection } from 'firebase/firestore';
 
 const Lost = () => {
   const [txt, setTxt] = useState('');
@@ -27,24 +27,24 @@ const Lost = () => {
     });
 
     if (!result.canceled) {
-      // const imgRef = ref(storage, `Imgs/${v4()}`);
-      // const response = await fetch(result.assets[0].uri);
-      // const blob = await response.blob();
+      const imgRef = ref(storage, `Imgs/${v4()}`);
+      const response = await fetch(result.assets[0].uri);
+      const blob = await response.blob();
 
-      // uploadBytes(imgRef, blob).then((snapshot) => {
-      //   getDownloadURL(snapshot.ref).then((url) => {
-      //     setImg(url);
-      //     Alert.alert('Image uploaded successfully');
-      //   });
-      // }).catch((error) => {
-      //   console.log('Upload failed:', error);
-      // });
+      uploadBytes(imgRef, blob).then((snapshot) => {
+        getDownloadURL(snapshot.ref).then((url) => {
+          setImg(url);
+          Alert.alert('Image uploaded successfully');
+        });
+      }).catch((error) => {
+        console.log('Upload failed:', error);
+      });
     }
   };
 
   const handleClick = async () => {
-    // const valRef = collection(db, 'txtData');
-    // await addDoc(valRef, { txtVal: txt, imgUrl: img });
+    const valRef = collection(db, 'txtData');
+    await addDoc(valRef, { txtVal: txt, imgUrl: img });
     Alert.alert('Data added successfully');
   };
 

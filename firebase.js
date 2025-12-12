@@ -30,8 +30,8 @@ if (!getApps().length) {
   auth = getAuth(app);
 }
 
-// Initialize Firebase Storage
-const storage = getStorage(app);
+// Initialize Firebase Storage with explicit bucket URL
+const storage = getStorage(app, "gs://bus-app-ffdee.appspot.com");
 
 // Initialize Firestore
 const db = getFirestore(app);
