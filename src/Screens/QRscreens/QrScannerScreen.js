@@ -68,7 +68,7 @@ const QRScanner = () => {
         where('travelDate', '>=', startOfDay),
         where('travelDate', '<', endOfDay),
         where('journeyType', '==', journeyType),
-        where('checked', '==', false),
+        // where('checked', '==', false),
         limit(1)
       );
 

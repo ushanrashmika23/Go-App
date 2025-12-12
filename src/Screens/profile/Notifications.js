@@ -9,8 +9,8 @@ import {
   TouchableOpacity,
   RefreshControl,
 } from 'react-native';
-// import firestore from '@react-native-firebase/firestore';
-// import messaging from '@react-native-firebase/messaging';
+import {db} from '../../../firebase';
+import {collection, query, orderBy, getDocs, onSnapshot} from 'firebase/firestore';
 import {useNotification} from '../../navigation/NotificationContext';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -23,7 +23,7 @@ const NotificationItem = ({item, onPress}) => (
       <Icon
         name={item.isRead ? 'notifications' : 'notifications-outline'}
         size={24}
-        color={item.isRead ? '#999' : '#ff8c52'}
+        color={item.isRead ? '#999' : '#2948FF'}
       />
     </View>
     <View style={styles.contentContainer}>
@@ -50,8 +50,8 @@ const Notifications = () => {
 
   const getReadNotifications = async () => {
     try {
-      // const readNotifications = await AsyncStorage.getItem('readNotifications');
-      // return readNotifications ? JSON.parse(readNotifications) : {};
+      const readNotifications = await AsyncStorage.getItem('readNotifications');
+      return readNotifications ? JSON.parse(readNotifications) : {};
     } catch (error) {
       console.error('Error getting read notifications:', error);
       return {};
@@ -60,12 +60,12 @@ const Notifications = () => {
 
   const setReadNotification = async notificationId => {
     try {
-      // const readNotifications = await getReadNotifications();
-      // readNotifications[notificationId] = true;
-      // await AsyncStorage.setItem(
-      //   'readNotifications',
-      //   JSON.stringify(readNotifications),
-      // );
+      const readNotifications = await getReadNotifications();
+      readNotifications[notificationId] = true;
+      await AsyncStorage.setItem(
+        'readNotifications',
+        JSON.stringify(readNotifications),
+      );
     } catch (error) {
       console.error('Error setting read notification:', error);
     }
@@ -73,18 +73,19 @@ const Notifications = () => {
 
   const fetchNotifications = async () => {
     try {
-      // const querySnapshot = await firestore()
-      //   .collection('Notices')
-      //   .orderBy('date', 'desc')
-      //   .get();
-      // const readNotifications = await getReadNotifications();
-      // const notices = querySnapshot.docs.map(doc => ({
-      //   ...doc.data(),
-      //   key: doc.id,
-      //   isRead: readNotifications[doc.id] || false,
-      // }));
-      // setNotifications(notices);
-      // updateUnreadCount(notices.filter(notice => !notice.isRead).length);
+      const noticesQuery = query(
+        collection(db, 'Notices'),
+        orderBy('date', 'desc')
+      );
+      const querySnapshot = await getDocs(noticesQuery);
+      const readNotifications = await getReadNotifications();
+      const notices = querySnapshot.docs.map(doc => ({
+        ...doc.data(),
+        key: doc.id,
+        isRead: readNotifications[doc.id] || false,
+      }));
+      setNotifications(notices);
+      updateUnreadCount(notices.filter(notice => !notice.isRead).length);
     } catch (error) {
       console.error('Error fetching notifications:', error);
       Alert.alert('Error', 'Failed to load notifications. Please try again.');
@@ -95,45 +96,50 @@ const Notifications = () => {
   };
 
   useEffect(() => {
-    // const unsubscribe = firestore()
-    //   .collection('Notices')
-    //   .orderBy('date', 'desc')
-    //   .onSnapshot(
-    //     async querySnapshot => {
-    //       const readNotifications = await getReadNotifications();
-    //       const notices = querySnapshot.docs.map(doc => ({
-    //         ...doc.data(),
-    //         key: doc.id,
-    //         isRead: readNotifications[doc.id] || false,
-    //       }));
-    //       setNotifications(notices);
-    //       updateUnreadCount(notices.filter(notice => !notice.isRead).length);
-    //     },
-    //     error => {
-    //       console.error('Error fetching notifications:', error);
-    //       Alert.alert(
-    //         'Error',
-    //         'Failed to load notifications. Please try again.',
-    //       );
-    //     },
-    //   );
-    // setLoading(false);
-    // setRefreshing(false);
+    const noticesQuery = query(
+      collection(db, 'Notices'),
+      orderBy('date', 'desc')
+    );
+    
+    const unsubscribe = onSnapshot(
+      noticesQuery,
+      async querySnapshot => {
+        const readNotifications = await getReadNotifications();
+        const notices = querySnapshot.docs.map(doc => ({
+          ...doc.data(),
+          key: doc.id,
+          isRead: readNotifications[doc.id] || false,
+        }));
+        setNotifications(notices);
+        updateUnreadCount(notices.filter(notice => !notice.isRead).length);
+        setLoading(false);
+        setRefreshing(false);
+      },
+      error => {
+        console.error('Error fetching notifications:', error);
+        Alert.alert(
+          'Error',
+          'Failed to load notifications. Please try again.',
+        );
+        setLoading(false);
+        setRefreshing(false);
+      },
+    );
 
-    // return () => unsubscribe(); // Clean up the listener when the component unmounts
+    return () => unsubscribe(); // Clean up the listener when the component unmounts
   }, []);
 
   const markAsRead = async notification => {
     if (notification.isRead) return;
 
     try {
-      // await setReadNotification(notification.key);
-      // setNotifications(prevNotifications =>
-      //   prevNotifications.map(notice =>
-      //     notice.key === notification.key ? {...notice, isRead: true} : notice,
-      //   ),
-      // );
-      // decrementUnreadCount();
+      await setReadNotification(notification.key);
+      setNotifications(prevNotifications =>
+        prevNotifications.map(notice =>
+          notice.key === notification.key ? {...notice, isRead: true} : notice,
+        ),
+      );
+      decrementUnreadCount();
     } catch (error) {
       console.error('Error marking notification as read:', error);
       Alert.alert(
@@ -145,17 +151,17 @@ const Notifications = () => {
 
   const handleMarkAllAsRead = async () => {
     try {
-      // await markAllAsRead();
-      // setNotifications(prevNotifications =>
-      //   prevNotifications.map(notice => ({...notice, isRead: true})),
-      // );
-      // updateUnreadCount(0);
-      // await AsyncStorage.setItem(
-      //   'readNotifications',
-      //   JSON.stringify(
-      //     Object.fromEntries(notifications.map(notice => [notice.key, true])),
-      //   ),
-      // );
+      await markAllAsRead();
+      setNotifications(prevNotifications =>
+        prevNotifications.map(notice => ({...notice, isRead: true})),
+      );
+      updateUnreadCount(0);
+      await AsyncStorage.setItem(
+        'readNotifications',
+        JSON.stringify(
+          Object.fromEntries(notifications.map(notice => [notice.key, true])),
+        ),
+      );
     } catch (error) {
       console.error('Error marking all notifications as read:', error);
       Alert.alert(
@@ -173,7 +179,7 @@ const Notifications = () => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#ff8c52" />
+        <ActivityIndicator size="large" color="#2948FF" />
       </View>
     );
   }
@@ -185,7 +191,7 @@ const Notifications = () => {
         <TouchableOpacity
           onPress={handleMarkAllAsRead}
           style={styles.markAllButton}>
-          <Icon name="checkmark-done-outline" size={24} color="#ff8c52" />
+          <Icon name="checkmark-done-outline" size={24} color="#2948FF" />
         </TouchableOpacity>
       </View>
       <FlatList
@@ -198,7 +204,7 @@ const Notifications = () => {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={['#ff8c52']}
+            colors={['#2948FF']}
           />
         }
         ListEmptyComponent={
@@ -272,7 +278,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#ff8c52',
+    backgroundColor: '#2948FF',
     alignSelf: 'center',
     marginLeft: 8,
   },

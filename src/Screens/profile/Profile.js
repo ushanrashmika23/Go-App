@@ -12,10 +12,10 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import {Icon} from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import {auth, db} from '../../../firebase';
-// import {doc, getDoc, updateDoc} from 'firebase/firestore';
+import {auth, db, storage} from '../../../firebase';
+import {doc, getDoc, updateDoc} from 'firebase/firestore';
+import {ref, uploadBytes, getDownloadURL} from 'firebase/storage';
 import * as ImagePicker from 'expo-image-picker';
-// import storage from '@react-native-firebase/storage';
 
 const ProfilePage = () => {
   const [userInfo, setUserInfo] = useState(null);
@@ -49,24 +49,24 @@ const ProfilePage = () => {
   const uploadImageToFirebase = async imageUri => {
     setUploadingImage(true);
     try {
-      // const userEmail = await AsyncStorage.getItem('userEmail');
-      // const fileName = userEmail + '_profile.jpg';
-      // const storageRef = storage().ref(`profile/${fileName}`);
+      const userEmail = await AsyncStorage.getItem('userEmail');
+      const fileName = userEmail + '_profile.jpg';
+      const storageRef = ref(storage, `profile/${fileName}`);
 
       // Upload the file to Firebase Storage
-      // const response = await fetch(imageUri);
-      // const blob = await response.blob();
-      // await storageRef.put(blob);
+      const response = await fetch(imageUri);
+      const blob = await response.blob();
+      await uploadBytes(storageRef, blob);
 
       // Get the image URL
-      // const downloadURL = await storageRef.getDownloadURL();
+      const downloadURL = await getDownloadURL(storageRef);
 
       // Save the URL to Firestore
-      // const userDocRef = doc(db, 'userdata', userEmail);
-      // await updateDoc(userDocRef, {profileImage: downloadURL});
+      const userDocRef = doc(db, 'userdata', userEmail);
+      await updateDoc(userDocRef, {profileImage: downloadURL});
 
       // Update state
-      // setUserInfo(prev => ({...prev, profileImage: downloadURL}));
+      setUserInfo(prev => ({...prev, profileImage: downloadURL}));
     } catch (error) {
       console.log('Error uploading image:', error);
     } finally {
@@ -77,14 +77,14 @@ const ProfilePage = () => {
   const fetchUserData = async () => {
     setLoadingUserInfo(true);
     try {
-      // const savedEmail = await AsyncStorage.getItem('userEmail');
-      // const userDocRef = doc(db, 'userdata', savedEmail);
-      // const userDoc = await getDoc(userDocRef);
-      // if (userDoc.exists()) {
-      //   setUserInfo(userDoc.data());
-      // } else {
-      //   console.log('No user data found in Firebase');
-      // }
+      const savedEmail = await AsyncStorage.getItem('userEmail');
+      const userDocRef = doc(db, 'userdata', savedEmail);
+      const userDoc = await getDoc(userDocRef);
+      if (userDoc.exists()) {
+        setUserInfo(userDoc.data());
+      } else {
+        console.log('No user data found in Firebase');
+      }
     } catch (error) {
       console.log('Error fetching user data:', error);
     } finally {
@@ -94,10 +94,10 @@ const ProfilePage = () => {
 
   const logout = async () => {
     try {
-      // await AsyncStorage.removeItem('userRole');
-      // await AsyncStorage.removeItem('userEmail');
-      // navigation.navigate('SigninWelcomeScreen');
-      // console.log('User logged out, storage cleared');
+      await AsyncStorage.removeItem('userRole');
+      await AsyncStorage.removeItem('userEmail');
+      navigation.navigate('SigninWelcomeScreen');
+      console.log('User logged out, storage cleared');
     } catch (error) {
       console.error('Error clearing storage during logout:', error);
     }
@@ -114,9 +114,9 @@ const ProfilePage = () => {
 
     const handleSave = async () => {
       try {
-        // const userEmail = await AsyncStorage.getItem('userEmail');
-        // const userDocRef = doc(db, 'userdata', userEmail);
-        // await updateDoc(userDocRef, {[field]: localValue});
+        const userEmail = await AsyncStorage.getItem('userEmail');
+        const userDocRef = doc(db, 'userdata', userEmail);
+        await updateDoc(userDocRef, {[field]: localValue});
 
         // Update the global userInfo state
         setUserInfo(prev => ({...prev, [field]: localValue}));
@@ -164,7 +164,7 @@ const ProfilePage = () => {
       </View>
 
       {loadingUserInfo ? (
-        <ActivityIndicator size="large" color="#ff8c52" style={styles.loader} />
+        <ActivityIndicator size="large" color="#2948FF" style={styles.loader} />
       ) : (
         <>
           <View style={styles.profileImageContainer}>
@@ -178,7 +178,7 @@ const ProfilePage = () => {
               />
             </TouchableOpacity>
             {uploadingImage && (
-              <ActivityIndicator size="small" color="#ff8c52" />
+              <ActivityIndicator size="small" color="#2948FF" />
             )}
           </View>
 
@@ -213,8 +213,11 @@ const ProfilePage = () => {
           <TouchableOpacity
             style={styles.menuItem}
             onPress={() =>
-              navigation.navigate('ReservationHistory', {
-                userEmail: userInfo?.email,
+              navigation.navigate('HomeScreen', {
+                screen: 'ReservationHistory',
+                params: {
+                  userEmail: userInfo?.email,
+                },
               })
             }>
             <Text style={styles.menuItemText}>Reservation History</Text>
@@ -326,7 +329,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   logoutButton: {
-    backgroundColor: '#FFA500',
+    backgroundColor: '#2948FF',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
