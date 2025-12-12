@@ -68,6 +68,7 @@ const QRScanner = () => {
         where('travelDate', '>=', startOfDay),
         where('travelDate', '<', endOfDay),
         where('journeyType', '==', journeyType),
+        where('checked', '==', false),
         limit(1)
       );
 
@@ -80,10 +81,10 @@ const QRScanner = () => {
         });
         setBookingDetails(bookingDoc.data());
       } else {
-        Alert.alert(
-          'No Booking Found',
-          `You don't have a booking for this bus today (${journeyType === 'toCompany' ? 'To Company' : 'From Company'}).`,
-        );
+        // Alert.alert(
+        //   'No Booking Found',
+        //   `You don't have a booking for this bus today (${journeyType === 'toCompany' ? 'To Company' : 'From Company'}).`,
+        // );
       }
     } catch (error) {
       console.error('Error updating booking: ', error);

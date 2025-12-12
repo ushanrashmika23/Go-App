@@ -12,7 +12,7 @@ import {
   FlatList,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { doc, setDoc, getDoc, getDocs, collection } from 'firebase/firestore';
+import { doc, setDoc, getDoc, getDocs, collection, query, where, Timestamp } from 'firebase/firestore';
 import { db } from '../../../firebase';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Icon } from 'react-native-elements';
@@ -92,6 +92,30 @@ export default function BookRegistration() {
     }
 
     try {
+      // Check if user already has an active booking for the selected date and journey type
+      const startOfSelectedDate = new Date(date);
+      startOfSelectedDate.setHours(0, 0, 0, 0);
+      const endOfSelectedDate = new Date(date);
+      endOfSelectedDate.setHours(23, 59, 59, 999);
+
+      const existingBookingQuery = query(
+        collection(db, 'reservations'),
+        where('email', '==', email),
+        where('travelDate', '>=', Timestamp.fromDate(startOfSelectedDate)),
+        where('travelDate', '<=', Timestamp.fromDate(endOfSelectedDate)),
+        where('journeyType', '==', journeyType)
+      );
+
+      const existingBookings = await getDocs(existingBookingQuery);
+
+      if (!existingBookings.empty) {
+        Alert.alert(
+          'Booking Exists',
+          'You already have an active booking for this date and journey type. You can only book one seat at a time.',
+        );
+        return;
+      }
+
       // Book for the selected date
       await setDoc(
         doc(
@@ -106,6 +130,7 @@ export default function BookRegistration() {
           journeyType,
           destination,
           travelDate: date,
+          checked: false,
           seatId,
           seat_state: true,
         },
