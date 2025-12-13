@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import React, { useEffect, useState } from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SigninWelcomeScreen from '../Screens/authScreens/SigninWelcomeScreen';
 import HomeScreen from '../Screens/HomeScreen';
 import HomeMap from '../Components/Homemap';
@@ -18,7 +18,7 @@ import ProfilePage from '../Screens/profile/Profile';
 import Notifications from '../Screens/profile/Notifications';
 import ReservationHistory from '../Screens/profile/ReservationHistoryScreen';
 
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Details from '../Screens/Details';
 import TicketPrices from '../Screens/Details/TicketPrices';
@@ -27,8 +27,12 @@ import DriverDetails from '../Screens/Details/DriverDetails';
 import BusDetails from '../Screens/Details/BusDetails';
 import Emergency from '../Screens/EmergencyDetails/Emergency';
 import FeedBack from '../Screens/FeedBack/FeedBack';
-import {useNotification} from './NotificationContext';
+import { useNotification } from './NotificationContext';
 import QRScannerScreen from '../Screens/QRscreens/QrScannerScreen';
+import SubmitLostItem from '../imagePicker/SubmitLostItem';
+import LostItemList from '../imagePicker/LostItemsList';
+import FoundItemList from '../imagePicker/FoundItemList';
+
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
@@ -42,7 +46,7 @@ function HomeStack() {
   // });
 
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen
         name="HomeScreen"
         component={HomeScreen}
@@ -68,6 +72,27 @@ function HomeStack() {
       <Stack.Screen
         name="newLost"
         component={NewLost}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="SubmitLostItem"
+        component={SubmitLostItem}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="LostItemList"
+        component={LostItemList}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="FoundItemList"
+        component={FoundItemList}
         options={{
           headerShown: false,
         }}
@@ -184,12 +209,12 @@ function HomeStack() {
 }
 
 function TabNavigator() {
-  const {unreadCount} = useNotification();
+  const { unreadCount } = useNotification();
 
   return (
     <Tab.Navigator
-      screenOptions={({route}) => ({
-        tabBarIcon: ({focused, color, size}) => {
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
           let iconName;
           if (route.name === 'HomeScreen') {
             iconName = focused ? 'home' : 'home-outline';
@@ -217,8 +242,8 @@ function TabNavigator() {
         component={Notifications}
         options={{
           tabBarBadge: unreadCount > 0 ? unreadCount : null,
-          tabBarBadgeStyle: {backgroundColor: '#2948FF'},
-          tabBarBadgeStyle: {backgroundColor: '#2948FF', color: 'white'},
+          tabBarBadgeStyle: { backgroundColor: '#2948FF' },
+          tabBarBadgeStyle: { backgroundColor: '#2948FF', color: 'white' },
         }}
       />
       <Tab.Screen name="profile" component={ProfilePage} />
@@ -228,7 +253,7 @@ function TabNavigator() {
 
 export default function AuthStack() {
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen
         name="SigninWelcomeScreen"
         component={SigninWelcomeScreen}
