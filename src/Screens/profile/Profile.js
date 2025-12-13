@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,12 +9,12 @@ import {
   ActivityIndicator,
   TextInput,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {Icon} from 'react-native-elements';
+import { useNavigation } from '@react-navigation/native';
+import { Icon } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {auth, db, storage} from '../../../firebase';
-import {doc, getDoc, updateDoc} from 'firebase/firestore';
-import {ref, uploadBytes, getDownloadURL} from 'firebase/storage';
+import { auth, db, storage } from '../../../firebase';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import * as ImagePicker from 'expo-image-picker';
 
 const ProfilePage = () => {
@@ -63,10 +63,10 @@ const ProfilePage = () => {
 
       // Save the URL to Firestore
       const userDocRef = doc(db, 'userdata', userEmail);
-      await updateDoc(userDocRef, {profileImage: downloadURL});
+      await updateDoc(userDocRef, { profileImage: downloadURL });
 
       // Update state
-      setUserInfo(prev => ({...prev, profileImage: downloadURL}));
+      setUserInfo(prev => ({ ...prev, profileImage: downloadURL }));
     } catch (error) {
       console.log('Error uploading image:', error);
     } finally {
@@ -104,7 +104,7 @@ const ProfilePage = () => {
   };
 
   // InfoItem component with local state for each field
-  const InfoItem = ({label, value, field, editable}) => {
+  const InfoItem = ({ label, value, field, editable }) => {
     const [localValue, setLocalValue] = useState(value); // Local state for each field
     const [isEditing, setIsEditing] = useState(false); // Editing state for each field
 
@@ -116,10 +116,10 @@ const ProfilePage = () => {
       try {
         const userEmail = await AsyncStorage.getItem('userEmail');
         const userDocRef = doc(db, 'userdata', userEmail);
-        await updateDoc(userDocRef, {[field]: localValue});
+        await updateDoc(userDocRef, { [field]: localValue });
 
         // Update the global userInfo state
-        setUserInfo(prev => ({...prev, [field]: localValue}));
+        setUserInfo(prev => ({ ...prev, [field]: localValue }));
         setIsEditing(false);
       } catch (error) {
         console.log('Error updating user data:', error);
@@ -155,13 +155,12 @@ const ProfilePage = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-left" type="feather" size={24} color="#000" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>My Profile</Text>
+        <Text style={styles.headerText}>My Profile</Text>
+        <Icon name="person-circle-outline" type="ionicon" size={28} color="#2948FF" />
       </View>
+      <ScrollView style={styles.scrollContent}>
 
       {loadingUserInfo ? (
         <ActivityIndicator size="large" color="#2948FF" style={styles.loader} />
@@ -229,7 +228,8 @@ const ProfilePage = () => {
           </TouchableOpacity>
         </>
       )}
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 
@@ -238,19 +238,24 @@ export default ProfilePage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f8f8f8',
   },
   header: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
+    padding: 16,
+    backgroundColor: '#fff',
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: '#e0e0e0',
   },
-  headerTitle: {
-    fontSize: 18,
+  headerText: {
+    fontSize: 24,
     fontWeight: 'bold',
-    marginLeft: 20,
+  },
+  scrollContent: {
+    flex: 1,
+    backgroundColor: '#fff',
   },
   loader: {
     marginTop: 50,
@@ -341,5 +346,5 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
-  },
+  },
 });

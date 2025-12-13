@@ -137,7 +137,7 @@ export default function HomeScreen() {
             />
             <MenuButton
               title="Lost and Found"
-              iconName="magnify"
+              iconName="briefcase-search"
               onPress={() => navigation.navigate('newLost')}
             />
             <MenuButton
@@ -147,23 +147,23 @@ export default function HomeScreen() {
             />
             <MenuButton
               title="Details"
-              iconName="inbox" // You can use any icon name from MaterialCommunityIcons
+              iconName="information"
               onPress={() => navigation.navigate('Details')}
             />
             <MenuButton
               title="Emergency Details"
-              iconName="alert-circle" // Changed to a valid icon name
+              iconName="phone-alert"
               onPress={() => navigation.navigate('Emergency')}
             />
             <MenuButton
               title="FeedBack Details"
-              iconName="alert-circle" // Changed to a valid icon name
-              onPress={() => navigation.navigate('Emergency')}
+              iconName="message-text"
+              onPress={() => navigation.navigate('FeedBack')}
             />
             <MenuButton
-              title="FeedBack Details"
-              iconName="alert-circle" // Changed to a valid icon name
-              onPress={() => navigation.navigate('Emergency')}
+              title="Ticket Rollover"
+              iconName="ticket-confirmation"
+              onPress={() => navigation.navigate('TicketPrices')}
             />
           </View>
         </View>

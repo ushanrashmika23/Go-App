@@ -55,11 +55,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#007bff',
+    backgroundColor: '#2948FF',
     marginBottom: 15,
   },
   submitButton: {
-    backgroundColor: '#28a745',
+    backgroundColor: '#2ebd4fff',
   },
   buttonText: {
     color: 'white',

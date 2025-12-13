@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
   },
   header: {
-    backgroundColor: '#ffa500', // Orange color
+    backgroundColor: '#2948FF',
     padding: 15,
     alignItems: 'center',
     justifyContent: 'center',

@@ -1,30 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, ActivityIndicator } from 'react-native';
-// import firestore from '@react-native-firebase/firestore'; // Assuming you're using @react-native-firebase
+import { db } from '../../../firebase';
+import { collection, onSnapshot } from 'firebase/firestore';
 
 const TicketPrices = () => {
   const [loading, setLoading] = useState(true); // Set loading to true on component mount
   const [ticketPrices, setTicketPrices] = useState([]); // Initial empty array of ticket prices
 
   useEffect(() => {
-    // const subscriber = firestore()
-    //   .collection('ticketPrices')
-    //   .onSnapshot(querySnapshot => {
-    //     const ticketPrices = [];
+    const ticketPricesRef = collection(db, 'ticketPrices');
 
-    //     querySnapshot.forEach(documentSnapshot => {
-    //       ticketPrices.push({
-    //         ...documentSnapshot.data(),
-    //         key: documentSnapshot.id, // To uniquely identify each item in the list
-    //       });
-    //     });
+    const unsubscribe = onSnapshot(ticketPricesRef, (querySnapshot) => {
+      const ticketPrices = [];
 
-    //     setTicketPrices(ticketPrices);
-    //     setLoading(false);
-    //   });
+      querySnapshot.forEach((documentSnapshot) => {
+        ticketPrices.push({
+          ...documentSnapshot.data(),
+          key: documentSnapshot.id, // To uniquely identify each item in the list
+        });
+      });
+
+      setTicketPrices(ticketPrices);
+      setLoading(false);
+    });
 
     // Unsubscribe from events when no longer in use
-    // return () => subscriber();
+    return () => unsubscribe();
   }, []);
 
   if (loading) {

@@ -23,10 +23,10 @@ const BusDetails = () => {
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.card}>
-                
-                <Image 
+
+                <Image
                     source={{ uri: bus.ImageUrl || '/mnt/data/image.png' }} // Use your uploaded image if bus.ImageUrl is not available
-                    style={styles.image} 
+                    style={styles.image}
                 />
                 <View style={styles.info}>
                     <Text style={styles.text}>Reg No. {bus.RegNo || 'N/A'}</Text>
