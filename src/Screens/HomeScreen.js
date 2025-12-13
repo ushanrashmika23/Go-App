@@ -160,7 +160,7 @@ export default function HomeScreen() {
             <MenuButton
               title="Bus Scheduling"
               iconName="bus-clock"
-              onPress={() => { }}
+              onPress={() => { navigation.navigate('TimeShedule') }}
             />
             <MenuButton
               title="Details"
