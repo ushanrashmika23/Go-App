@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,16 +7,33 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
-import {Icon} from 'react-native-elements';
+import { Icon } from 'react-native-elements';
 import HomeHeader from '../Components/HomeHeader';
-import {colors} from '../global/styles';
-import {useNavigation} from '@react-navigation/native';
+import { colors } from '../global/styles';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HomeScreen() {
   const [delivery, setDelivery] = useState(true);
+  const [userEmail, setUserEmail] = useState('');
   const navigation = useNavigation();
 
-  const MenuButton = ({title, iconName, onPress}) => (
+  useEffect(() => {
+    loadUserEmail();
+  }, []);
+
+  const loadUserEmail = async () => {
+    try {
+      const email = await AsyncStorage.getItem('userEmail');
+      if (email) {
+        setUserEmail(email);
+      }
+    } catch (error) {
+      console.error('Error loading email:', error);
+    }
+  };
+
+  const MenuButton = ({ title, iconName, onPress }) => (
     <TouchableOpacity style={styles.menuButton} onPress={onPress}>
       <Icon
         type="material-community"
@@ -28,7 +45,7 @@ export default function HomeScreen() {
     </TouchableOpacity>
   );
 
-  const QRScanBanner = ({onScanPress}) => (
+  const QRScanBanner = ({ onScanPress }) => (
     <TouchableOpacity style={styles.qrBanner} onPress={onScanPress}>
       <View style={styles.qrTextContainer}>
         <Text style={styles.qrTitle}>Are you ready for a</Text>
@@ -143,7 +160,7 @@ export default function HomeScreen() {
             <MenuButton
               title="Bus Scheduling"
               iconName="bus-clock"
-              onPress={() => {}}
+              onPress={() => { }}
             />
             <MenuButton
               title="Details"
@@ -161,9 +178,12 @@ export default function HomeScreen() {
               onPress={() => navigation.navigate('FeedBack')}
             />
             <MenuButton
-              title="Ticket Rollover"
+              title="My Tickets"
               iconName="ticket-confirmation"
-              onPress={() => navigation.navigate('TicketPrices')}
+              onPress={() =>
+                navigation.navigate('ReservationHistory', {
+                  userEmail: userEmail,
+                })}
             />
           </View>
         </View>
@@ -182,7 +202,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
@@ -247,7 +267,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.grey5,
     marginHorizontal: 5,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 5,
     elevation: 5,
@@ -293,7 +313,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 16,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,

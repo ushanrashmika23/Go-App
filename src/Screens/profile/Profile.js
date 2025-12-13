@@ -209,7 +209,7 @@ const ProfilePage = () => {
             />
           </View>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.menuItem}
             onPress={() =>
               navigation.navigate('HomeScreen', {
@@ -221,7 +221,7 @@ const ProfilePage = () => {
             }>
             <Text style={styles.menuItemText}>Reservation History</Text>
             <Icon name="chevron-right" type="feather" size={20} color="#888" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <TouchableOpacity style={styles.logoutButton} onPress={logout}>
             <Text style={styles.logoutButtonText}>LOGOUT</Text>

@@ -24,6 +24,8 @@ import {
 const ReservationHistoryScreen = ({ route }) => {
   const [bookings, setBookings] = useState([]);
   const [loadingBookings, setLoadingBookings] = useState(true);
+  const scrollViewRef = React.useRef(null);
+  const bookingRefs = React.useRef({});
   const navigation = useNavigation();
   const { userEmail } = route.params;
 
@@ -43,12 +45,51 @@ const ReservationHistoryScreen = ({ route }) => {
         id: doc.id,
         ...doc.data(),
       }));
-      setBookings(bookingsData);
+      
+      // Sort bookings by date (highest/most recent first)
+      const sortedBookings = bookingsData.sort((a, b) => {
+        const dateA = a.travelDate.toDate();
+        const dateB = b.travelDate.toDate();
+        return dateB - dateA;
+      });
+      
+      setBookings(sortedBookings);
+      
+      // Scroll to lowest active booking after data loads
+      setTimeout(() => scrollToLowestActiveBooking(sortedBookings), 500);
     } catch (error) {
       console.log('Error fetching bookings:', error);
       Alert.alert('Error', 'Failed to fetch bookings');
     } finally {
       setLoadingBookings(false);
+    }
+  };
+
+  const scrollToLowestActiveBooking = (bookingsData) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    // Find active bookings (not past and not checked in)
+    const activeBookings = bookingsData.filter(booking => {
+      const journeyDate = booking.travelDate.toDate();
+      journeyDate.setHours(0, 0, 0, 0);
+      return journeyDate >= today && booking.checked !== true;
+    });
+    
+    if (activeBookings.length > 0) {
+      // Get the lowest active booking (earliest upcoming)
+      const lowestActive = activeBookings[activeBookings.length - 1];
+      const viewRef = bookingRefs.current[lowestActive.id];
+      
+      if (viewRef && scrollViewRef.current) {
+        viewRef.measureLayout(
+          scrollViewRef.current,
+          (x, y) => {
+            scrollViewRef.current.scrollTo({ y: y - 50, animated: true });
+          },
+          () => {}
+        );
+      }
     }
   };
 
@@ -100,7 +141,7 @@ const ReservationHistoryScreen = ({ route }) => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-left" type="feather" size={24} color="#000" />
@@ -111,9 +152,10 @@ const ReservationHistoryScreen = ({ route }) => {
       {loadingBookings ? (
         <ActivityIndicator size="large" color="#2948FF" style={styles.loader} />
       ) : (
-        <View style={styles.bookingsContainer}>
-          {bookings.length > 0 ? (
-            bookings.map(booking => {
+        <ScrollView ref={scrollViewRef}>
+          <View style={styles.bookingsContainer}>
+            {bookings.length > 0 ? (
+              bookings.map(booking => {
               const isPast = isPastJourney(booking.travelDate);
               const canCancel = canCancelBooking(booking.travelDate, booking.journeyType, booking.checked);
               const now = new Date();
@@ -126,7 +168,12 @@ const ReservationHistoryScreen = ({ route }) => {
                 now.getHours() >= 11;
 
               return (
-                <View key={booking.id} style={styles.bookingItem}>
+                <View 
+                  key={booking.id} 
+                  style={styles.bookingItem}
+                  ref={ref => bookingRefs.current[booking.id] = ref}
+                  collapsable={false}
+                >
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <View>
                       <Text style={styles.bookingText}>
@@ -162,6 +209,15 @@ const ReservationHistoryScreen = ({ route }) => {
                   )}
                   <TouchableOpacity
                     style={[
+                      styles.shiftButton,
+                      !canCancel && styles.disabledButton,
+                    ]}
+                    onPress={() => canCancel && navigation.navigate('TicketRollover',{ bookingId: booking.id })}
+                    disabled={!canCancel}>
+                    <Text style={styles.shiftButtonText}>Shift booking to new date</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[
                       styles.cancelButton,
                       !canCancel && styles.disabledButton,
                     ]}
@@ -175,9 +231,10 @@ const ReservationHistoryScreen = ({ route }) => {
           ) : (
             <Text style={styles.noBookingsText}>No reservations found.</Text>
           )}
-        </View>
+          </View>
+        </ScrollView>
       )}
-    </ScrollView>
+    </View>
   );
 };
 
@@ -213,6 +270,18 @@ const styles = StyleSheet.create({
   bookingText: {
     fontSize: 14,
     marginBottom: 5,
+  },
+  shiftButton: {
+    backgroundColor: '#007bff',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  shiftButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
   cancelButton: {
     backgroundColor: '#ff4d4dff',

@@ -32,6 +32,7 @@ import QRScannerScreen from '../Screens/QRscreens/QrScannerScreen';
 import SubmitLostItem from '../imagePicker/SubmitLostItem';
 import LostItemList from '../imagePicker/LostItemsList';
 import FoundItemList from '../imagePicker/FoundItemList';
+import TicketRollover from './../Screens/TickerRollover/TicketRollover';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -65,6 +66,13 @@ function HomeStack() {
       <Stack.Screen
         name="DestinationSearch"
         component={DestinationSearch}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="TicketRollover"
+        component={TicketRollover}
         options={{
           headerShown: false,
         }}
