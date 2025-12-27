@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     zIndex: 5,
     lineHeight: 180,
+    alignSelf: 'center',
   },
   headerContainer: {
     flex: 2,
@@ -101,6 +102,7 @@ const styles = StyleSheet.create({
     height: '80%',
     zIndex: 10,
     alignSelf: 'center',
+    transform: [{ translateY: 20 }],
   },
   dot: {
     backgroundColor: 'rgba(41, 74, 221,0.3)',
