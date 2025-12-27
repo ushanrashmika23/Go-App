@@ -1,10 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, Image, SafeAreaView} from 'react-native';
-import {Button} from 'react-native-elements';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Image, SafeAreaView } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Button } from 'react-native-elements';
 import Swiper from 'react-native-swiper';
+import Svg, { Text as SvgText } from 'react-native-svg';
 
-const SigninWelcomeScreen = ({navigation}) => {
+const SigninWelcomeScreen = ({ navigation }) => {
   const [authState, setAuthState] = useState(false);
 
   useEffect(() => {
@@ -23,47 +25,34 @@ const SigninWelcomeScreen = ({navigation}) => {
     getEmailFromStorage(); // Call the function to fetch email on mount
   }, []);
 
-  const images = [
-    require('../../../assets/imgs/bus.png-removebg-preview.png'),
-    require('../../../assets/imgs/bus.png-removebg-preview.png'),
-    require('../../../assets/imgs/bus.png-removebg-preview.png'),
-  ];
-
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Discover Our Service</Text>
-        <Text style={styles.headerText}>In Your Area</Text>
-      </View>
+    <SafeAreaView style={{ flex: 1 }}>
+      {/* <LinearGradient colors={['#2948FF', '#3d59fdff','#396afc']} start={{ x: 1, y: 0 }} end={{ x: 0, y: 1 }} style={styles.container}> */}
+      <LinearGradient colors={['#2948FF', '#526bfcff', '#2948ff']} start={{ x: 1, y: 0 }} end={{ x: 0, y: 1 }} style={styles.container}>
+        <View style={styles.headerContainer}></View>
 
-      <View style={styles.swiperContainer}>
-        <Swiper
-          autoplay
-          autoplayTimeout={4}
-          dot={<View style={styles.dot} />}
-          activeDot={<View style={styles.activeDot} />}>
-          {images.map((image, index) => (
-            <View key={index} style={styles.slide}>
-              <Image source={image} style={styles.image} resizeMode="contain" />
-            </View>
-          ))}
-        </Swiper>
-      </View>
+        <View style={styles.swiperContainer}>
+          <Text style={styles.mainText}>FIND BUS</Text>
+          <Image source={require('../../../assets/imgs/bus.png')} style={styles.image} resizeMode="contain" />
+        </View>
 
-      <View style={styles.buttonContainer}>
-        <Button
-          title="Get Statrted"
-          buttonStyle={styles.button}
-          titleStyle={styles.buttonTitle}
-          onPress={() => navigation.navigate('Registration')}
-        />
-        {/* <Button
-          title="Lecture"
-          buttonStyle={styles.lecbutton}
-          titleStyle={styles.buttonTitle}
-          onPress={() => navigation.navigate('SigninScreen')}
-        /> */}
-      </View>
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerText}>
+            Connecting {"\n"}
+            you to every {"\n"}
+            destination.
+          </Text>
+        </View>
+
+        <View style={styles.buttonContainer}>
+          <Button
+            title="Get Started"
+            buttonStyle={styles.button}
+            titleStyle={styles.buttonTitle}
+            onPress={() => navigation.navigate('Registration')}
+          />
+        </View>
+      </LinearGradient>
     </SafeAreaView>
   );
 };
@@ -71,7 +60,16 @@ const SigninWelcomeScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    position: 'relative',
+  },
+  mainText: {
+    position: 'absolute',
+    fontSize: 148,
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    zIndex: 5,
+    lineHeight: 180,
   },
   headerContainer: {
     flex: 2,
@@ -81,9 +79,13 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 28,
-    color: '#2948FF',
-    fontWeight: 'bold',
+    color: '#fff',
+    fontWeight: '500',
     textAlign: 'center',
+    width: '85%',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    lineHeight: 36,
   },
   swiperContainer: {
     flex: 4,
@@ -92,10 +94,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 10,
   },
   image: {
     width: '80%',
     height: '80%',
+    zIndex: 10,
+    alignSelf: 'center',
   },
   dot: {
     backgroundColor: 'rgba(41, 74, 221,0.3)',
@@ -108,7 +113,7 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   activeDot: {
-    backgroundColor: '#294add',
+    backgroundColor: '#2948FF',
     width: 12,
     height: 12,
     borderRadius: 6,
@@ -124,24 +129,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   button: {
-    backgroundColor: '#294add',
-    borderRadius: 8,
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
     height: 50,
     marginBottom: 15,
   },
   lecbutton: {
-    backgroundColor: '#294add',
+    backgroundColor: '#ffffff',
     borderRadius: 8,
     height: 50,
     marginBottom: 15,
   },
   buttonTitle: {
-    color: 'white',
+    color: '#2948FF',
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   loginButtonTitle: {
-    color: '#294add',
+    color: '#000',
     fontSize: 16,
     fontWeight: '600',
   },

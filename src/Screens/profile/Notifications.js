@@ -188,11 +188,11 @@ const Notifications = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Notifications</Text>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={handleMarkAllAsRead}
           style={styles.markAllButton}>
           <Icon name="checkmark-done-outline" size={24} color="#2948FF" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       <FlatList
         data={notifications}
@@ -227,16 +227,17 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: '#2948FF',
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
   },
   headerText: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: '#ffffff',
   },
   markAllButton: {
     padding: 8,

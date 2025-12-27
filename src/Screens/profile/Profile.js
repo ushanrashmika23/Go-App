@@ -158,58 +158,62 @@ const ProfilePage = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>My Profile</Text>
-        <Icon name="person-circle-outline" type="ionicon" size={28} color="#2948FF" />
+        {/* <Icon name="person-circle-outline" type="ionicon" size={28} color="#2948FF" /> */}
       </View>
       <ScrollView style={styles.scrollContent}>
 
-      {loadingUserInfo ? (
-        <ActivityIndicator size="large" color="#2948FF" style={styles.loader} />
-      ) : (
-        <>
-          <View style={styles.profileImageContainer}>
-            <TouchableOpacity onPress={handleImagePick}>
-              <Image
-                source={{
-                  uri:
-                    userInfo?.profileImage || 'https://via.placeholder.com/150',
-                }}
-                style={styles.profileImage}
+        {loadingUserInfo ? (
+          <ActivityIndicator size="large" color="#2948FF" style={styles.loader} />
+        ) : (
+          <>
+            <View style={styles.profileImageContainer}>
+              {/* <TouchableOpacity onPress={handleImagePick}> */}
+              <TouchableOpacity>
+                <Image
+                  source={{
+                    uri:
+                      userInfo?.profileImage || 'https://tse4.mm.bing.net/th/id/OIP.yBwIrstROT-OGYe0waN_7AHaHa?w=1920&h=1920&rs=1&pid=ImgDetMain&o=7&rm=3',
+                  }}
+                  style={styles.profileImage}
+                />
+              </TouchableOpacity>
+              <Text style={{ marginTop: 8, fontSize: 18, fontWeight: 'bold' }}>{userInfo?.fullName}</Text>
+              {uploadingImage && (
+                <ActivityIndicator size="small" color="#2948FF" />
+              )}
+            </View>
+
+            <View style={styles.infoContainer}>
+              <Text style={styles.sectionTitle}>Your Info</Text>
+              <InfoItem
+                label="Full Name"
+                value={userInfo?.fullName}
+                field="fullName"
+                editable={true}
               />
-            </TouchableOpacity>
-            {uploadingImage && (
-              <ActivityIndicator size="small" color="#2948FF" />
-            )}
-          </View>
+              <InfoItem
+                label="Email Address"
+                value={userInfo?.email}
+                field="email"
+                editable={false}
+              />
+              <InfoItem
+                label="Phone Number"
+                value={userInfo?.phoneNumber}
+                field="phoneNumber"
+                editable={true}
+              />
+              <InfoItem
+                label="Role"
+                value={userInfo?.role}
+                field="role"
+                editable={false}
+              />
+            </View>
 
-          <View style={styles.infoContainer}>
-            <Text style={styles.sectionTitle}>Your Info</Text>
-            <InfoItem
-              label="Full Name"
-              value={userInfo?.fullName}
-              field="fullName"
-              editable={true}
-            />
-            <InfoItem
-              label="Email Address"
-              value={userInfo?.email}
-              field="email"
-              editable={false}
-            />
-            <InfoItem
-              label="Phone Number"
-              value={userInfo?.phoneNumber}
-              field="phoneNumber"
-              editable={true}
-            />
-            <InfoItem
-              label="Role"
-              value={userInfo?.role}
-              field="role"
-              editable={false}
-            />
-          </View>
+            {/* TODO: add password reset icon */}
 
-          {/* <TouchableOpacity
+            {/* <TouchableOpacity
             style={styles.menuItem}
             onPress={() =>
               navigation.navigate('HomeScreen', {
@@ -223,11 +227,11 @@ const ProfilePage = () => {
             <Icon name="chevron-right" type="feather" size={20} color="#888" />
           </TouchableOpacity> */}
 
-          <TouchableOpacity style={styles.logoutButton} onPress={logout}>
-            <Text style={styles.logoutButtonText}>LOGOUT</Text>
-          </TouchableOpacity>
-        </>
-      )}
+            <TouchableOpacity style={styles.logoutButton} onPress={logout}>
+              <Text style={styles.logoutButtonText}>LOGOUT</Text>
+            </TouchableOpacity>
+          </>
+        )}
       </ScrollView>
     </View>
   );
@@ -242,16 +246,17 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: '#2948FF',
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
   },
   headerText: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: '#ffffff',
   },
   scrollContent: {
     flex: 1,
@@ -265,9 +270,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    opacity: 0.5
   },
   infoContainer: {
     padding: 20,

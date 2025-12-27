@@ -58,8 +58,8 @@ export default function HomeScreen() {
         <Icon
           type="material-community"
           name="qrcode-scan"
-          color={colors.black}
-          size={32}
+          color={'#ffffff'}
+          size={46}
         />
         <TouchableOpacity style={styles.scanButton} onPress={onScanPress}>
           <Text style={styles.scanButtonText}>Scan</Text>
@@ -78,66 +78,8 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <HomeHeader />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.content}>
-          {/* <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={[styles.deliveryButton, delivery && styles.activeButton]}
-              onPress={() => {
-                setDelivery(true);
-                navigation.navigate('HomeSearch');
-              }}>
-              <Icon
-                type="material-community"
-                name="clock-fast"
-                color={delivery ? colors.cardbackground : colors.grey2}
-                size={24}
-              />
-              <Text
-                style={[styles.deliveryText, delivery && styles.activeText]}>
-                Live Scheduling
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.deliveryButton, !delivery && styles.activeButton]}
-              onPress={() => {
-                setDelivery(false);
-                navigation.navigate('DestinationSearch');
-              }}>
-              <Icon
-                type="material-community"
-                name="calendar-clock"
-                color={!delivery ? colors.cardbackground : colors.grey2}
-                size={24}
-              />
-              <Text
-                style={[styles.deliveryText, !delivery && styles.activeText]}>
-                Scheduled Delivery
-              </Text>
-            </TouchableOpacity>
-          </View> */}
-
-          {/* <View style={styles.locationCard}>
-            <View style={styles.locationInfo}>
-              <Icon
-                type="material-community"
-                name="map-marker"
-                color={colors.primary}
-                size={26}
-              />
-              <Text style={styles.locationText}>KDU Southern Campus</Text>
-            </View>
-            <View style={styles.locationInfo}>
-              <Icon
-                type="material-community"
-                name="clock-time-four"
-                color={colors.primary}
-                size={26}
-              />
-              <Text style={styles.locationText}>Now</Text>
-            </View>
-          </View> */}
 
           <QRScanBanner onScanPress={handleScanPress} />
 
@@ -195,7 +137,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   qrBanner: {
     flexDirection: 'row',
-    backgroundColor: '#d3d8f3ff',
+    backgroundColor: '#2948FF',
     borderRadius: 10,
     marginBottom: 16,
     padding: 16,
@@ -209,30 +151,39 @@ const styles = StyleSheet.create({
   },
   qrTextContainer: {
     flex: 2,
-    alignItems: 'flex-end',
+    alignItems: 'flex-start',
+    color: '#ffffff',
+
   },
   qrTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: colors.grey1,
+    // color: colors.grey1,
+    color: '#ffffff',
   },
   qrSubtitle: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: colors.primary,
+    // color: colors.primary,
+    color: '#ffffff',
     marginVertical: 4,
   },
   qrDescription: {
     fontSize: 14,
-    color: colors.grey2,
+    // color: colors.grey2,
+    color: '#ffffff',
+    marginTop: 8,
   },
   qrIconContainer: {
     display: 'flex',
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 10,
   },
   scanButton: {
-    backgroundColor: 'blue',
+    // backgroundColor: 'blue',
+    backgroundColor: '#ffffff',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
@@ -242,19 +193,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   scanButtonText: {
-    color: colors.cardbackground,
+    // color: colors.cardbackground,
+    color: '#000000',
     fontWeight: 'bold',
   },
   container: {
     flex: 1,
     backgroundColor: colors.background,
+    height: '100%',
   },
   content: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    width: '100%',
     padding: 16,
+    minHeight: 500,
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     marginVertical: 20,
   },
   deliveryButton: {
@@ -304,10 +262,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+    marginTop: 24,
   },
   menuButton: {
     width: '48%',
-    backgroundColor: colors.cardbackground,
+    // backgroundColor: colors.cardbackground,
+    backgroundColor: '#d4daff',
     borderRadius: 15,
     padding: 16,
     alignItems: 'center',

@@ -20,6 +20,7 @@ import {getDoc, doc} from 'firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {auth, db} from '../../../firebase';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const Login = ({route}) => {
   const {justRegistered} = route.params || {};
@@ -145,68 +146,76 @@ const Login = ({route}) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
-        <View style={styles.innerContainer}>
-          <Text style={styles.title}>Welcome Back</Text>
-          <Text style={styles.subtitle}>Sign in to continue</Text>
-          <View style={styles.inputContainer}>
-            <TextInput
-              placeholder="Email"
-              placeholderTextColor="#A0A0A0"
-              value={email}
-              onChangeText={text => {
-                setEmail(text);
-                setEmailError('');
-              }}
-              style={[styles.input, emailError && styles.inputError]}
-              editable={!isLoading}
-              autoCapitalize="none"
-              keyboardType="email-address"
-            />
-            {emailError ? (
-              <Text style={styles.errorText}>{emailError}</Text>
-            ) : null}
-            <TextInput
-              placeholder="Password"
-              placeholderTextColor="#A0A0A0"
-              value={password}
-              onChangeText={text => {
-                setPassword(text);
-                setPasswordError('');
-              }}
-              style={[styles.input, passwordError && styles.inputError]}
-              secureTextEntry
-              editable={!isLoading}
-            />
-            {passwordError ? (
-              <Text style={styles.errorText}>{passwordError}</Text>
-            ) : null}
+      <LinearGradient colors={['#2948FF', '#526bfcff', '#2948ff']} start={{ x: 1, y: 0 }} end={{ x: 0, y: 1 }} style={styles.container}>
+        <KeyboardAvoidingView
+          style={styles.innerContainer}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+          <View style={styles.content}>
+            <Text style={styles.title}>SIGN IN</Text>
+            {/* <Text style={styles.subtitle}>Sign in to continue</Text> */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Email</Text>
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  placeholder="Email"
+                  placeholderTextColor="#ccc"
+                  value={email}
+                  onChangeText={text => {
+                    setEmail(text);
+                    setEmailError('');
+                  }}
+                  style={[styles.input, emailError && styles.inputError]}
+                  editable={!isLoading}
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                />
+              </View>
+              {emailError ? (
+                <Text style={styles.errorText}>{emailError}</Text>
+              ) : null}
+              <Text style={styles.label}>Password</Text>
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  placeholder="Password"
+                  placeholderTextColor="#ccc"
+                  value={password}
+                  onChangeText={text => {
+                    setPassword(text);
+                    setPasswordError('');
+                  }}
+                  style={[styles.input, passwordError && styles.inputError]}
+                  secureTextEntry
+                  editable={!isLoading}
+                />
+              </View>
+              {passwordError ? (
+                <Text style={styles.errorText}>{passwordError}</Text>
+              ) : null}
+            </View>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                onPress={handleLogin}
+                style={styles.loginButton}
+                disabled={isLoading}>
+                <Text style={styles.buttonText}>Login</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={forgotPassword}
+                style={styles.forgotPasswordButton}
+                disabled={isLoading}>
+                <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.registerContainer}>
+              <Text style={styles.registerText}>Don't have an account? </Text>
+              <TouchableOpacity onPress={navigateToRegister}>
+                <Text style={styles.registerLink}>Register Here</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              onPress={handleLogin}
-              style={styles.loginButton}
-              disabled={isLoading}>
-              <Text style={styles.buttonText}>Login</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={forgotPassword}
-              style={styles.forgotPasswordButton}
-              disabled={isLoading}>
-              <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.registerContainer}>
-            <Text style={styles.registerText}>Don't have an account? </Text>
-            <TouchableOpacity onPress={navigateToRegister}>
-              <Text style={styles.registerLink}>Student Registeration</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
+      </LinearGradient>
       <Modal
         transparent={true}
         animationType="fade"
@@ -225,7 +234,6 @@ const Login = ({route}) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
   },
   container: {
     flex: 1,
@@ -233,31 +241,45 @@ const styles = StyleSheet.create({
   innerContainer: {
     flex: 1,
     justifyContent: 'center',
+    padding: 20,
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#2948FF',
+    color: '#fff',
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 16,
-    color: '#666666',
+    color: '#fff',
     marginBottom: 30,
   },
   inputContainer: {
     width: '100%',
     marginBottom: 20,
   },
-  input: {
-    backgroundColor: '#F5F5F5',
-    color: '#333333',
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    borderRadius: 10,
+    marginBottom: 15,
     paddingHorizontal: 15,
-    paddingVertical: 12,
-    borderRadius: 8,
-    marginBottom: 12,
+    elevation: 0,
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+  input: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+    color: '#fff',
+    backgroundColor: 'transparent',
     fontSize: 16,
   },
   buttonContainer: {
@@ -265,7 +287,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loginButton: {
-    backgroundColor: '#2948FF',
+    backgroundColor: '#ffffff',
     width: '100%',
     padding: 15,
     borderRadius: 8,
@@ -273,7 +295,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   buttonText: {
-    color: 'white',
+    color: '#2948FF',
     fontWeight: '600',
     fontSize: 16,
   },
@@ -281,7 +303,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   forgotPasswordText: {
-    color: '#2948FF',
+    color: '#fff',
     fontSize: 14,
     fontWeight: '600',
   },
@@ -290,15 +312,15 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   registerText: {
-    color: '#666666',
+    color: '#fff',
     fontSize: 14,
   },
   registerLink: {
-    color: '#2948FF',
+    color: '#fff',
+    textDecorationLine: 'underline',
+    fontWeight: 'bold',
     fontSize: 14,
-    fontWeight: '600',
   },
-
   inputError: {
     borderColor: 'red',
     borderWidth: 1,
@@ -307,6 +329,14 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: 12,
     marginBottom: 5,
+  },
+  label: {
+    fontSize: 16,
+    color: '#fff',
+    fontWeight: '500',
+    marginBottom: 5,
+    alignSelf: 'flex-start',
+    width: '100%',
   },
   modalBackground: {
     flex: 1,
@@ -321,27 +351,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  errorModalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-    maxWidth: '80%',
-  },
-  errorModalText: {
-    fontSize: 16,
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  errorModalButton: {
-    backgroundColor: '#2948FF',
-    padding: 10,
-    borderRadius: 5,
-  },
-  errorModalButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
   },
 });
 

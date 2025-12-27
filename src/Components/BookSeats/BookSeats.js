@@ -15,6 +15,7 @@ import { db } from '../../../firebase';
 import { Icon } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import Header from '../Header';
 
 const initializeSeats = (count, userRole) =>
   Array.from({ length: count }, (_, index) => ({
@@ -180,10 +181,11 @@ const BookSeats = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <Icon name="bus" type="font-awesome" size={30} color="#3498db" />
         <Text style={styles.headerText}>Select Your Seat</Text>
-      </View>
+      </View> */}
+      <Header title="Select Your Seat" type="arrow-left" />
 
       <TouchableOpacity
         style={styles.dateButton}

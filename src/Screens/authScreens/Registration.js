@@ -11,11 +11,12 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
-import {createUserWithEmailAndPassword} from 'firebase/auth';
-import {setDoc, doc} from 'firebase/firestore';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { setDoc, doc } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
-import {auth, db} from '../../../firebase';
+import { auth, db } from '../../../firebase';
 import { Icon } from 'react-native-elements';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const Registration = () => {
   const [email, setEmail] = useState('');
@@ -149,7 +150,7 @@ const Registration = () => {
         {
           text: 'OK',
           onPress: () =>
-            navigation.navigate('SigninScreen', {justRegistered: true}),
+            navigation.navigate('SigninScreen', { justRegistered: true }),
         },
       ]);
     } catch (error) {
@@ -162,125 +163,98 @@ const Registration = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        <KeyboardAvoidingView behavior="padding">
-          <View style={styles.headerContainer}>
-            <Icon
-              name="user-plus"
-              type="font-awesome"
-              size={50}
-              color="#294add"
-            />
-            <Text style={styles.title}>Create Account</Text>
-          </View>
-          <View style={styles.inputContainer}>
-            <View style={styles.inputWrapper}>
-              <Icon name="user" type="font-awesome" size={20} color="#294add" />
-              <TextInput
-                placeholder="Full Name"
-                value={fullName}
-                onChangeText={setFullName}
-                style={styles.input}
-                placeholderTextColor="#999"
-              />
+      <LinearGradient colors={['#2948FF', '#526bfcff', '#2948ff']} start={{ x: 1, y: 0 }} end={{ x: 0, y: 1 }} style={styles.container}>
+        <ScrollView contentContainerStyle={styles.scrollViewContent}>
+          <KeyboardAvoidingView behavior="padding">
+            <View style={styles.headerContainer}>
+              <Text style={styles.title}>CREATE ACCOUNT</Text>
             </View>
-            <View style={styles.inputWrapper}>
-              <Icon
-                name="envelope"
-                type="font-awesome"
-                size={20}
-                color="#294add"
-              />
-              <TextInput
-                placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
-                style={styles.input}
-                placeholderTextColor="#999"
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Full Name</Text>
+              <View style={styles.inputWrapper}>
+
+                <TextInput
+                  placeholder="Full Name"
+                  value={fullName}
+                  onChangeText={setFullName}
+                  style={styles.input}
+                  placeholderTextColor="#ccc"
+                />
+              </View>
+              <Text style={styles.label}>Email</Text>
+              <View style={styles.inputWrapper}>
+
+                <TextInput
+                  placeholder="Email"
+                  value={email}
+                  onChangeText={setEmail}
+                  style={styles.input}
+                  placeholderTextColor="#ccc"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                />
+              </View>
+              <Text style={styles.label}>Password</Text>
+              <View style={styles.inputWrapper}>
+
+                <TextInput
+                  placeholder="Password"
+                  value={password}
+                  onChangeText={setPassword}
+                  style={styles.input}
+                  secureTextEntry
+                  placeholderTextColor="#ccc"
+                />
+              </View>
+              <Text style={styles.label}>Confirm Password</Text>
+              <View style={styles.inputWrapper}>
+
+                <TextInput
+                  placeholder="Confirm Password"
+                  value={confirmPassword}
+                  onChangeText={setConfirmPassword}
+                  style={styles.input}
+                  secureTextEntry
+                  placeholderTextColor="#ccc"
+                />
+              </View>
+             
+              <Text style={styles.label}>Phone Number</Text>
+              <View style={styles.inputWrapper}>
+
+                <TextInput
+                  placeholder="Phone Number"
+                  value={phoneNumber}
+                  onChangeText={setPhoneNumber}
+                  style={styles.input}
+                  placeholderTextColor="#ccc"
+                  keyboardType="phone-pad"
+                  maxLength={10}
+                />
+              </View>
             </View>
-            <View style={styles.inputWrapper}>
-              <Icon name="lock" type="font-awesome" size={20} color="#294add" />
-              <TextInput
-                placeholder="Password"
-                value={password}
-                onChangeText={setPassword}
-                style={styles.input}
-                secureTextEntry
-                placeholderTextColor="#999"
-              />
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                onPress={handleRegister}
+                style={styles.button}
+                disabled={isLoading}>
+                {isLoading ? (
+                  <ActivityIndicator size="small" color="#ffffff" />
+                ) : (
+                  <Text style={styles.buttonText}>Register</Text>
+                )}
+              </TouchableOpacity>
             </View>
-            <View style={styles.inputWrapper}>
-              <Icon name="lock" type="font-awesome" size={20} color="#294add" />
-              <TextInput
-                placeholder="Confirm Password"
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-                style={styles.input}
-                secureTextEntry
-                placeholderTextColor="#999"
-              />
+            <View style={styles.loginContainer}>
+              <Text style={styles.loginText}>Already have an account?</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('SigninScreen')}>
+                <Text style={styles.loginLink}>Login here</Text>
+              </TouchableOpacity>
             </View>
-            {/* <View style={styles.inputWrapper}>
-              <Icon
-                name="id-card"
-                type="font-awesome"
-                size={20}
-                color="#294add"
-              />
-              <TextInput
-                placeholder={
-                  role === 'student'
-                    ? 'Student Enrollment Number'
-                    : 'Lecturer ID'
-                }
-                value={enrollmentNum}
-                onChangeText={setEnrollmentNum}
-                style={styles.input}
-                placeholderTextColor="#999"
-              />
-            </View> */}
-            <View style={styles.inputWrapper}>
-              <Icon
-                name="phone"
-                type="font-awesome"
-                size={20}
-                color="#294add"
-              />
-              <TextInput
-                placeholder="Phone Number"
-                value={phoneNumber}
-                onChangeText={setPhoneNumber}
-                style={styles.input}
-                placeholderTextColor="#999"
-                keyboardType="phone-pad"
-                maxLength={10}
-              />
-            </View>
-          </View>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              onPress={handleRegister}
-              style={styles.button}
-              disabled={isLoading}>
-              {isLoading ? (
-                <ActivityIndicator size="small" color="#ffffff" />
-              ) : (
-                <Text style={styles.buttonText}>Register</Text>
-              )}
-            </TouchableOpacity>
-          </View>
-          <View style={styles.loginContainer}>
-            <Text style={styles.loginText}>Already have an account?</Text>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('SigninScreen')}>
-              <Text style={styles.loginLink}>Login here</Text>
-            </TouchableOpacity>
-          </View>
-        </KeyboardAvoidingView>
-      </ScrollView>
+          </KeyboardAvoidingView>
+        </ScrollView>
+      </LinearGradient>
     </SafeAreaView>
   );
 };
@@ -309,7 +283,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#fff',
     marginTop: 10,
   },
   inputContainer: {
@@ -318,17 +292,20 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
     borderRadius: 10,
     marginBottom: 15,
     paddingHorizontal: 15,
-    elevation: 2,
+    elevation: 0,
+    borderWidth: 1,
+    borderColor: '#ccc',
   },
   input: {
     flex: 1,
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    color: '#333',
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+    color: '#fff',
+    backgroundColor: 'transparent',
     fontSize: 16,
   },
   roleLabel: {
@@ -370,14 +347,14 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   button: {
-    backgroundColor: '#294add',
+    backgroundColor: '#ffffff',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
   },
   buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: '#2948FF',
+    fontWeight: '700',
     fontSize: 18,
   },
   loginContainer: {
@@ -386,14 +363,21 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   loginText: {
-    color: '#333',
+    color: '#fff',
     fontSize: 16,
   },
   loginLink: {
-    color: '#294add',
+    color: '#fff',
+    textDecorationLine: 'underline',
     fontWeight: 'bold',
     fontSize: 16,
     marginLeft: 5,
+  },
+  label: {
+    fontSize: 16,
+    color: '#fff',
+    fontWeight: '500',
+    marginBottom: 5,
   },
 });
 

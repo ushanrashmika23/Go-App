@@ -20,7 +20,8 @@
         "foregroundImage": "./assets/bus-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.codementor23.GoApp"
     },
     "web": {
       "favicon": "./assets/bus-icon.png"

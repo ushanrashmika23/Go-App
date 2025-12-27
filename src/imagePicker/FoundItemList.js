@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Alert, TextInput } from 'react-native';
 import { db, auth } from '../../firebase';
 import { collection, query, where, getDocs, orderBy, deleteDoc, doc } from 'firebase/firestore';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Header from '../Components/Header';
 
 export default function FoundItemsList() {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [search, setSearch] = useState('');
 
     useEffect(() => {
         fetchFoundItems();
@@ -113,16 +115,32 @@ export default function FoundItemsList() {
         );
     }
 
+    // Filter items by search
+    const filteredItems = items.filter(item =>
+        item.itemName?.toLowerCase().includes(search.toLowerCase()) ||
+        item.itemDescription?.toLowerCase().includes(search.toLowerCase())
+    );
+
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Found Items</Text>
-            {items.length === 0 ? (
+            <Header title="Found Items" type="arrow-left" />
+            <View style={styles.searchBarContainer}>
+                <TextInput
+                    style={styles.searchBar}
+                    placeholder="Search found items..."
+                    value={search}
+                    onChangeText={setSearch}
+                    autoCorrect={false}
+                    autoCapitalize="none"
+                />
+            </View>
+            {filteredItems.length === 0 ? (
                 <View style={styles.centerContainer}>
-                    <Text style={styles.emptyText}>No found items</Text>
+                    <Text style={styles.emptyText}>No found items found</Text>
                 </View>
             ) : (
                 <FlatList
-                    data={items}
+                    data={filteredItems}
                     renderItem={renderItem}
                     keyExtractor={item => item.id}
                     contentContainerStyle={styles.listContainer}
@@ -153,7 +171,7 @@ const styles = StyleSheet.create({
         padding: 15,
     },
     itemCard: {
-        backgroundColor: '#fff',
+        backgroundColor: '#EEF1FF',
         borderRadius: 10,
         padding: 15,
         marginBottom: 15,
@@ -164,9 +182,9 @@ const styles = StyleSheet.create({
         elevation: 3,
     },
     myItemCard: {
-        borderWidth: 2,
-        borderColor: '#fff',
-        // backgroundColor: '#f0f8ff',
+        // borderWidth: 2,
+        // borderColor: '#EEF1FF',
+        backgroundColor: '#EEF1FF',
     },
     cardHeader: {
         flexDirection: 'row',
@@ -198,6 +216,8 @@ const styles = StyleSheet.create({
         borderTopWidth: 1,
         borderTopColor: '#eee',
         paddingTop: 8,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     },
     detailText: {
         fontSize: 12,
@@ -207,5 +227,23 @@ const styles = StyleSheet.create({
     emptyText: {
         fontSize: 16,
         color: '#999',
+    },
+    searchBarContainer: {
+        paddingHorizontal: 15,
+        paddingTop: 10,
+        paddingBottom: 5,
+        backgroundColor: '#F8F7F3',
+    },
+    searchBar: {
+        backgroundColor: '#fff',
+        borderRadius: 8,
+        paddingHorizontal: 15,
+        paddingVertical: 10,
+        fontSize: 16,
+        borderWidth: 2,
+        borderColor: '#007bff',
+        placeholderTextColor: '#fff',
+        marginTop: 20,
+        marginBottom: 20,
     },
 });

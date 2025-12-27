@@ -16,6 +16,7 @@ import { doc, setDoc, getDoc, getDocs, collection, query, where, Timestamp } fro
 import { db } from '../../../firebase';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Icon } from 'react-native-elements';
+import Header from '../Header';
 
 export default function BookRegistration() {
   const [fullName, setFullName] = useState('');
@@ -148,85 +149,95 @@ export default function BookRegistration() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Book Your Seat</Text>
-      <Text style={styles.seatInfo}>Seat Number: {seatNumber}</Text>
-      <Text style={styles.seatInfo}>{date.toISOString().split('T')[0]}</Text>
-      <Text style={styles.seatInfo}>{journeyType === 'toCompany' ? 'To Company' : journeyType === 'fromCompany' ? 'From Company' : ''}</Text>
+      <Header title="Confirm Booking" type="arrow-left" />
+      <View style={styles.content}>
+        {/* <Text style={styles.title}>Confirm Booking</Text>
+        <Text style={styles.seatInfo}>Seat Number: {seatNumber}</Text>
+        <Text style={styles.seatInfo}>{date.toISOString().split('T')[0]}</Text>
+        <Text style={styles.seatInfo}>{journeyType === 'toCompany' ? 'To Company' : journeyType === 'fromCompany' ? 'From Company' : ''}</Text> */}
 
-      <TextInput
-        value={fullName}
-        placeholder="Full Name"
-        style={styles.input}
-        editable={false}
-      />
+        <View style={styles.seatInfoContainer}>
+          <Text style={styles.journeyInfo}>Journey {journeyType === 'toCompany' ? 'to Company' : journeyType === 'fromCompany' ? 'from Company' : ''}</Text>
+          <Text style={styles.seatInfo}>Seat number : {seatNumber}</Text>
+          <Text style={styles.dateInfo}>{date.toISOString().split('T')[0]}</Text>
 
-      <TextInput
-        value={email}
-        placeholder="Email"
-        style={styles.input}
-        keyboardType="email-address"
-        editable={false}
-      />
-
-      <TextInput
-        value={phoneNumber}
-        placeholder="Phone Number"
-        style={styles.input}
-        keyboardType="phone-pad"
-        editable={false}
-      />
-
-      <TouchableOpacity
-        style={styles.pickerButton}
-        onPress={() => setShowDestinationModal(true)}
-      >
-        <Text style={[styles.pickerButtonText, !destination && styles.placeholderText]}>
-          {destination || 'Select a destination'}
-        </Text>
-        <Icon name="chevron-down" type="material" size={24} color="#666" />
-      </TouchableOpacity>
-
-      {/* Destination Modal */}
-      <Modal
-        visible={showDestinationModal}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setShowDestinationModal(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Select Destination</Text>
-              <TouchableOpacity onPress={() => setShowDestinationModal(false)}>
-                <Icon name="close" type="material" size={24} color="#333" />
-              </TouchableOpacity>
-            </View>
-            <FlatList
-              data={interchanges}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={styles.modalItem}
-                  onPress={() => {
-                    setDestination(item);
-                    setShowDestinationModal(false);
-                  }}
-                >
-                  <Text style={styles.modalItemText}>{item}</Text>
-                  {destination === item && (
-                    <Icon name="check" type="material" size={20} color="#2948FF" />
-                  )}
-                </TouchableOpacity>
-              )}
-            />
-          </View>
         </View>
-      </Modal>
+
+        <TextInput
+          value={fullName}
+          placeholder="Full Name"
+          style={styles.input}
+          editable={false}
+        />
+
+        <TextInput
+          value={email}
+          placeholder="Email"
+          style={styles.input}
+          keyboardType="email-address"
+          editable={false}
+        />
+
+        <TextInput
+          value={phoneNumber}
+          placeholder="Phone Number"
+          style={styles.input}
+          keyboardType="phone-pad"
+          editable={false}
+        />
+
+        <TouchableOpacity
+          style={styles.pickerButton}
+          onPress={() => setShowDestinationModal(true)}
+        >
+          <Text style={[styles.pickerButtonText, !destination && styles.placeholderText]}>
+            {destination || 'Select a destination'}
+          </Text>
+          <Icon name="chevron-down" type="material" size={24} color="#666" />
+        </TouchableOpacity>
+
+        {/* Destination Modal */}
+        <Modal
+          visible={showDestinationModal}
+          transparent={true}
+          animationType="slide"
+          onRequestClose={() => setShowDestinationModal(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Select Destination</Text>
+                <TouchableOpacity onPress={() => setShowDestinationModal(false)}>
+                  <Icon name="close" type="material" size={24} color="#333" />
+                </TouchableOpacity>
+              </View>
+              <FlatList
+                data={interchanges}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={styles.modalItem}
+                    onPress={() => {
+                      setDestination(item);
+                      setShowDestinationModal(false);
+                    }}
+                  >
+                    <Text style={styles.modalItemText}>{item}</Text>
+                    {destination === item && (
+                      <Icon name="check" type="material" size={20} color="#2948FF" />
+                    )}
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
+          </View>
+        </Modal>
 
 
-      <TouchableOpacity style={styles.submitButton} onPress={submitBooking}>
-        <Text style={styles.submitButtonText}>Book Seat</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.submitButton} onPress={submitBooking}>
+          <Text style={styles.submitButtonText}>Book Seat</Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 }
@@ -299,7 +310,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
-  container: {
+  content: {
     padding: 20,
     backgroundColor: '#f5f5f5',
     flexGrow: 1,
@@ -311,11 +322,35 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#333',
   },
+
+  seatInfoContainer: {
+    marginBottom: 20,
+    padding: 15,
+    backgroundColor: '#2948FF',
+    borderRadius: 8,
+  },
+  journeyInfo: {
+    fontSize: 20,
+    marginBottom: 20,
+    textAlign: 'center',
+    color: '#fff',
+    fontWeight: 'bold',
+  },
   seatInfo: {
+    marginTop: -10,
     fontSize: 18,
     marginBottom: 20,
     textAlign: 'center',
-    color: '#666',
+    color: '#fff',
+    fontWeight: 300
+  },
+  dateInfo: {
+    fontSize: 14,
+    color: '#fff',
+    marginTop: -10,
+    // marginBottom: 15,
+    textAlign: 'center',
+    fontWeight:'bold'
   },
   input: {
     height: 50,
@@ -326,13 +361,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     fontSize: 16,
     backgroundColor: '#fff',
-  },
-  dateInfo: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: -10,
-    marginBottom: 15,
-    textAlign: 'center',
   },
   submitButton: {
     backgroundColor: '#2948FF',

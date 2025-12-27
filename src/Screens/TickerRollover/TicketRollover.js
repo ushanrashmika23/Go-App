@@ -12,6 +12,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { Icon } from 'react-native-elements';
 import { db } from '../../../firebase';
 import { doc, getDoc, updateDoc, query, where, collection, getDocs, Timestamp } from 'firebase/firestore';
+import Header from '../../Components/Header';
 
 export default function TicketRollover({ route }) {
   const { bookingId } = route.params || {};
@@ -81,14 +82,14 @@ export default function TicketRollover({ route }) {
 
     try {
       setIsLoading(true);
-      
+
       // Create start of day (00:00:00) and end of day (23:59:59) timestamps
       const startOfDay = new Date(selectedDate);
       startOfDay.setHours(0, 0, 0, 0);
-      
+
       const endOfDay = new Date(selectedDate);
       endOfDay.setHours(23, 59, 59, 999);
-      
+
       const startTimestamp = Timestamp.fromDate(startOfDay);
       const endTimestamp = Timestamp.fromDate(endOfDay);
 
@@ -102,10 +103,10 @@ export default function TicketRollover({ route }) {
           where('travelDate', '<=', endTimestamp)
         );
         const userQuerySnapshot = await getDocs(userQ);
-        
+
         // Filter out the current booking
         const otherBookings = userQuerySnapshot.docs.filter(doc => doc.id !== bookingId);
-        
+
         if (otherBookings.length > 0) {
           Alert.alert('Error', 'You already have a booking on this date. Please cancel the existing booking first.');
           setIsLoading(false);
@@ -148,32 +149,8 @@ export default function TicketRollover({ route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Icon name="bus" type="font-awesome" size={30} color="#3498db" />
-        <Text style={styles.headerText}>Change Booking</Text>
-      </View>
+      <Header title="Ticket Rollover" type="arrow-left" />
 
-      <TouchableOpacity
-        style={styles.dateButton}
-        onPress={() => setDatePickerVisibility(true)}
-        disabled={isLoading}
-      >
-        <Text style={styles.dateButtonText}>
-          Select Date: {selectedDate.toDateString()}
-        </Text>
-      </TouchableOpacity>
-
-      <DateTimePickerModal
-        isVisible={isDatePickerVisible}
-        mode="date"
-        onConfirm={(date) => {
-          setSelectedDate(date);
-          setDatePickerVisibility(false);
-        }}
-        onCancel={() => setDatePickerVisibility(false)}
-        date={selectedDate}
-        minimumDate={new Date()}
-      />
 
       {bookingDetails && (
         <View style={styles.detailsCard}>
@@ -197,6 +174,28 @@ export default function TicketRollover({ route }) {
         </View>
       )}
 
+      <TouchableOpacity
+        style={styles.dateButton}
+        onPress={() => setDatePickerVisibility(true)}
+        disabled={isLoading}
+      >
+        <Text style={styles.dateButtonText}>
+          Select Date: {selectedDate.toDateString()}
+        </Text>
+      </TouchableOpacity>
+
+      <DateTimePickerModal
+        isVisible={isDatePickerVisible}
+        mode="date"
+        onConfirm={(date) => {
+          setSelectedDate(date);
+          setDatePickerVisibility(false);
+        }}
+        onCancel={() => setDatePickerVisibility(false)}
+        date={selectedDate}
+        minimumDate={new Date()}
+      />
+      <Text style={{ marginLeft: 10, marginTop: 10, color: '#666' }}>New Seat Number:</Text>
       <TextInput
         style={styles.seatInput}
         placeholder="Enter Seat Number (1-32)"

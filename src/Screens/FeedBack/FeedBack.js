@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import { db, auth } from '../../../firebase';
 import { addDoc, collection } from 'firebase/firestore';
+import Header from '../../Components/Header';
 
 const FeedBack = () => {
   const [name, setName] = useState('');
@@ -61,15 +62,16 @@ const FeedBack = () => {
 
   return (
     <ScrollView style={styles.container}>
+      <Header title="Feedback Details" type="arrow-left" />
       <View style={styles.content}>
         <Text style={styles.title}>Complaint Form</Text>
-        <Text style={styles.intro}>
+        {/* <Text style={styles.intro}>
           We value your feedback. Please fill out the form below to submit your complaint or concern, and we'll address it as soon as possible.
-        </Text>
+        </Text> */}
 
         {/* Name Input */}
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Name *</Text>
+          <Text style={styles.label}>Name</Text>
           <TextInput
             style={styles.textInput}
             placeholder="Enter your full name"
@@ -80,7 +82,7 @@ const FeedBack = () => {
 
         {/* Contact Info Input */}
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Contact Information *</Text>
+          <Text style={styles.label}>Contact Information</Text>
           <TextInput
             style={styles.textInput}
             placeholder="Phone number or email"
@@ -92,7 +94,7 @@ const FeedBack = () => {
 
         {/* Description Text Area */}
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Description *</Text>
+          <Text style={styles.label}>Description</Text>
           <TextInput
             style={styles.textArea}
             placeholder="Describe your complaint or concern in detail..."
@@ -126,12 +128,17 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
+    backgroundColor: '#c8ccf8',
+    borderRadius:16,
+    margin: 15,
+    marginTop: 25,
+    
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 15,
-    color: '#333',
+    color: '#2948FF',
     textAlign: 'center',
   },
   intro: {

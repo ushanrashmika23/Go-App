@@ -3,10 +3,10 @@ import {
   StyleSheet,
   Text,
   View,
-  StatusBar,
   PermissionsAndroid,
   Platform,
 } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useEffect } from 'react';
 import { colors } from './src/global/styles';
@@ -19,15 +19,25 @@ import Home from './src/Screens/HomeScreen';
 // import HomeSearch from './src/Components/HomeSearch/HomeSearch';
 // import DestinationSearch from './src/DestinationSearch/DestinationSearch';
 
-export default function App() {
 
+export default function App() {
   return (
-    <SafeAreaView style={styles.container}>
-      <RootNavigation />
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar style="light" backgroundColor="#2948FF" translucent={false} />
+      <View style={styles.container}>
+        <RootNavigation />
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#2948FF',
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
 });

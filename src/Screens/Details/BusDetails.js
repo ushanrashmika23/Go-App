@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
+import Header from '../../Components/Header';
 // import firestore from '@react-native-firebase/firestore';
 
 const BusDetails = () => {
-    const [bus, setBus] = useState(null);
+    const [bus, setBus] = useState({
+        RegNo: 'WP KA 1234',
+        Tel: '+1234567890',
+        Name: 'City Transport Service',
+        ImageUrl: 'https://thumbs.dreamstime.com/z/blue-bus-icon-vector-illustration-eps-267259672.jpg?w=576',
+    });
 
     const getData = async () => {
         // const busCollection = await firestore().collection('BusDetails').get();
@@ -16,22 +22,21 @@ const BusDetails = () => {
         getData();
     }, []);
 
-    if (!bus) {
-        return <Text>Loading...</Text>;
-    }
-
     return (
-        <ScrollView contentContainerStyle={styles.container}>
-            <View style={styles.card}>
+        <ScrollView >
+            <Header title="Bus Details" type="arrow-left" />
+            <View style={styles.container}>
+                <View style={styles.card}>
 
-                <Image
-                    source={{ uri: bus.ImageUrl || '/mnt/data/image.png' }} // Use your uploaded image if bus.ImageUrl is not available
-                    style={styles.image}
-                />
-                <View style={styles.info}>
-                    <Text style={styles.text}>Reg No. {bus.RegNo || 'N/A'}</Text>
-                    <Text style={styles.text}>Tel: {bus.Tel || 'N/A'}</Text>
-                    <Text style={styles.text}>{bus.Name || 'Transport Service'}</Text>
+                    <Image
+                        source={bus.ImageUrl ? { uri: bus.ImageUrl } : require('../../../assets/bus-icon.png')} // Use your uploaded image if bus.ImageUrl is not available
+                        style={styles.image}
+                    />
+                    <View style={styles.info}>
+                        <Text style={styles.text}>{bus.name || 'Transport Service'}</Text>
+                        <Text style={styles.tele}>{bus.RegNo || 'N/A'}</Text>
+                        <Text style={styles.tele}>{bus.Tel || 'N/A'}</Text>
+                    </View>
                 </View>
             </View>
         </ScrollView>
@@ -47,32 +52,38 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     card: {
-        backgroundColor: '#fff',
+        backgroundColor: '#c9d1ff',
         borderRadius: 12,
         padding: 20,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
-        elevation: 5,
+        // shadowColor: '#000',
+        // shadowOffset: { width: 0, height: 3 },
+        // shadowOpacity: 0.2,
+        // shadowRadius: 4,
+        // elevation: 5,
         alignItems: 'center',
         width: '90%',
     },
     image: {
-        width: 300, // Adjust the width of the image
-        height: 200, // Adjust the height of the image
+        width: '100%',
+        height: 200,
         borderRadius: 12,
-        marginBottom: 20, // Space between image and text
+        marginBottom: 20,
     },
     info: {
         alignItems: 'center',
     },
     text: {
+        // marginTop: 10,
+        fontSize: 22,
+        fontWeight: '700',
+        marginBottom: 5,
+        color: '#000',
+    },
+    tele: {
         fontSize: 16,
-        color: '#333', // Darker text for better readability
-        fontWeight: '600',
-        textAlign: 'center',
-        marginVertical: 4, // Space between text items
+        fontWeight: '700',
+        marginBottom: 5,
+        color: '#2948FF',
     },
 });
 

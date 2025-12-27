@@ -12,7 +12,7 @@ import BookSeats from '../Components/BookSeats/BookSeats';
 import BookRegitration from '../Components/BookSeats/BookRegitration';
 import PaymentScreen from '../Components/BookSeats/PaymentScreen';
 import PaymentView from '../Components/BookSeats/PaymentView';
-import Lost from '../imagePicker/Lost';
+// import Lost from '../imagePicker/Lost';
 import HomeSearch from '../Components/HomeSearch/HomeSearch';
 import ProfilePage from '../Screens/profile/Profile';
 import Notifications from '../Screens/profile/Notifications';

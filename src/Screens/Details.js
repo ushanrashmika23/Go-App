@@ -1,40 +1,47 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native'; // You can use other icon libraries as well.
+import Header from '../Components/Header';
 
 const Details = () => {
   const navigation = useNavigation();
+  const { width } = Dimensions.get("window");
   return (
-    <View style={styles.container}>
+    <View style={{}}>
       {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Details</Text>
-        <TouchableOpacity>
-          <Icon name="information-outline" size={24} color="black" />
+      <Header title="Details" type="arrow-left" />
+      <Image
+        source={require('./../../assets/imgs/lostcover.png')}
+        style={{
+          width: width,
+          height: undefined,
+          aspectRatio: 1134 / 700,
+        }}
+        resizeMode="contain"
+      />
+      <View style={styles.container}>
+        {/* Button List */}
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('TimeShedule')}>
+          <Icon name="clock-outline" size={24} color="white" />
+          <Text style={styles.buttonText}>Time Schedule</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('TicketPrices')}>
+          <Icon name="ticket-outline" size={24} color="white" />
+          <Text style={styles.buttonText}>Ticket Prices</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('DriverDetails')}>
+          <Icon name="account-outline" size={24} color="white" />
+          <Text style={styles.buttonText}>Driver Details</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BusDetails')}>
+          <Icon name="bus" size={24} color="white" />
+          <Text style={styles.buttonText}>Bus Details</Text>
         </TouchableOpacity>
       </View>
-
-      {/* Button List */}
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('TimeShedule')}>
-        <Icon name="clock-outline" size={24} color="white" />
-        <Text style={styles.buttonText}>Time Schedule</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('TicketPrices')}>
-        <Icon name="ticket-outline" size={24} color="white" />
-        <Text style={styles.buttonText}>Ticket Prices</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.button}  onPress={() => navigation.navigate('DriverDetails')}>
-        <Icon name="account-outline" size={24} color="white" />
-        <Text style={styles.buttonText}>Driver Details</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.button}  onPress={() => navigation.navigate('BusDetails')}>
-        <Icon name="bus" size={24} color="white" />
-        <Text style={styles.buttonText}>Bus Details</Text>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -60,11 +67,12 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#212121',
+    backgroundColor: '#2948FF',
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderRadius: 10,
-    marginVertical: 10,
+    marginVertical: 8,
+    height: 55,
   },
   buttonText: {
     color: 'white',

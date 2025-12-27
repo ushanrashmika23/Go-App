@@ -4,6 +4,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { db, auth } from '../../firebase';
 import { addDoc, collection } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
+import Header from '../Components/Header';
 
 
 export default function SubmitLostItem() {
@@ -74,8 +75,9 @@ export default function SubmitLostItem() {
 
     return (
         <ScrollView style={styles.container}>
+            <Header title="Submit Lost/Found Item" type="arrow-left" />
             <View style={styles.content}>
-                <Text style={styles.title}>Submit Item</Text>
+                {/* <Text style={styles.title}>Submit Item</Text> */}
 
                 {/* Radio buttons for Lost/Found */}
                 <View style={styles.radioGroup}>
@@ -153,10 +155,13 @@ export default function SubmitLostItem() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F8F7F3',
+        // backgroundColor: '#007bff',
     },
     content: {
         padding: 20,
+        paddingTop: 50,
+        // justifyContent: 'center',
+        // alignItems: 'center',
     },
     title: {
         fontSize: 24,
@@ -233,7 +238,7 @@ const styles = StyleSheet.create({
         color: '#333',
     },
     submitButton: {
-        backgroundColor: '#28a745',
+        backgroundColor: '#007bff',
         borderRadius: 10,
         padding: 15,
         alignItems: 'center',

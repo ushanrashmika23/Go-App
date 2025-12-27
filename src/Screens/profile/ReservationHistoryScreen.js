@@ -20,6 +20,7 @@ import {
   deleteDoc,
   doc,
 } from 'firebase/firestore';
+import Header from '../../Components/Header';
 
 const ReservationHistoryScreen = ({ route }) => {
   const [bookings, setBookings] = useState([]);
@@ -142,12 +143,14 @@ const ReservationHistoryScreen = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-left" type="feather" size={24} color="#000" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Reservation History</Text>
-      </View>
+      </View> */}
+
+        <Header title="Reservation History" type="arrow-left" />
 
       {loadingBookings ? (
         <ActivityIndicator size="large" color="#2948FF" style={styles.loader} />

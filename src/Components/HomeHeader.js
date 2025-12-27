@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Modal} from 'react-native';
-import {Icon, withBadge} from 'react-native-elements';
-import {colors, parameters} from '../global/styles';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import { Icon, withBadge } from 'react-native-elements';
+import { colors, parameters } from '../global/styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
-export default function HomeHeader({onLogout}) {
+export default function HomeHeader({ onLogout }) {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const navigation = useNavigation();
   const BadgeIcon = withBadge(0)(Icon);
@@ -32,19 +32,19 @@ export default function HomeHeader({onLogout}) {
 
   return (
     <View style={styles.header}>
-      <View style={styles.iconContainer}>
+      {/* <View style={styles.iconContainer}>
         <Icon
           type="material-community"
           name="menu"
           color={colors.cardbackground}
           size={32}
         />
-      </View>
+      </View> */}
       <View style={styles.titleContainer}>
         <Text style={styles.title}>MX Solutions</Text>
       </View>
 
-      <Modal
+      {/* <Modal
         transparent={true}
         visible={dropdownVisible}
         onRequestClose={() => setDropdownVisible(false)}>
@@ -90,18 +90,26 @@ export default function HomeHeader({onLogout}) {
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
-      </Modal>
+      </Modal> */}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   header: {
+    // flexDirection: 'row',
+    // backgroundColor: colors.buttons,
+    // height: parameters.headerHeight,
+    // alignItems: 'center',
+    // justifyContent: 'center',
     flexDirection: 'row',
-    backgroundColor: colors.buttons,
-    height: parameters.headerHeight,
+    justifyContent: 'center',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    padding: 16,
+    backgroundColor: '#2948FF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+
   },
   iconContainer: {
     alignItems: 'center',
@@ -115,8 +123,8 @@ const styles = StyleSheet.create({
   },
   title: {
     color: colors.cardbackground,
-    fontSize: 25,
-    fontWeight: '100',
+    fontSize: 24,
+    fontWeight: '700',
   },
   iconsContainer: {
     flexDirection: 'row',

@@ -17,27 +17,36 @@ export default function Header({ title, type }) {
           color={colors.headerText}
           size={28}
           onPress={() => {
-            navigation.navigate("SigninWelcomeScreen");
+            navigation.goBack();
           }}
         />
-        <AntDesign name='left' style={{ color: 'black', marginLeft: 5 }} />
+        {/* <AntDesign name='left' style={{ color: 'black', marginLeft: 5 }} /> */}
       </View>
       <Text style={styles.headerText}>{title}</Text>
+      <View></View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   header: {
-    flexDirection: "row",
-    backgroundColor: colors.buttons,
-    height: parameters.headerHeight,
+    // flexDirection: "row",
+    // backgroundColor: colors.buttons,
+    // height: parameters.headerHeight,
+    // alignItems: 'center',
+    // justifyContent: 'space-between',
+    // paddingHorizontal: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    justifyContent: 'center',
+    padding: 16,
+    backgroundColor: '#2948FF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
   },
   headerText: {
-    color: colors.headerText,
-    fontSize: 18,
-    fontWeight: 'bold',
+    color: colors.cardbackground,
+    fontSize: 24,
+    fontWeight: '700',
   },
 });
