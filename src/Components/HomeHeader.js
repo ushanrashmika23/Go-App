@@ -41,7 +41,7 @@ export default function HomeHeader({ onLogout }) {
         />
       </View> */}
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>MX Solutions</Text>
+        <Text style={styles.title}>Ceylon Move</Text>
       </View>
 
       {/* <Modal

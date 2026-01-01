@@ -25,6 +25,11 @@
     },
     "web": {
       "favicon": "./assets/bus-icon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f1fc5d89-c655-4224-8351-7f7318b66dfc"
+      }
     }
   }
 }
